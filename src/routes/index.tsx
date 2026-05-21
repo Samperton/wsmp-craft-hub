@@ -282,7 +282,18 @@ function InfoTabs() {
                   const res = await fetch(webhookUrl, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, title, body }),
+                    body: JSON.stringify({
+                      username: "WSMP Bug Reports",
+                      embeds: [
+                        {
+                          title: `🐛 ${title}`,
+                          description: body,
+                          color: 0xed4245,
+                          fields: [{ name: "In-game username", value: username, inline: true }],
+                          timestamp: new Date().toISOString(),
+                        },
+                      ],
+                    }),
                   });
                   if (!res.ok) throw new Error(`Request failed: ${res.status}`);
                   toast.success("Bug report sent", { description: "Thanks — staff will review it shortly." });
