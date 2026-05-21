@@ -129,7 +129,7 @@ function Hero() {
             { label: "CONNECT", desc: "Linked Discord" },
           ].map((f) => (
             <div key={f.label} className="rounded-xl border border-border bg-card/85 backdrop-blur p-4">
-              <div className="font-pixel text-xs md:text-sm text-primary">{f.label}</div>
+              <div className="font-minecraft text-lg md:text-xl text-primary">{f.label}</div>
               <div className="mt-2 text-xs md:text-sm text-slate-soft">{f.desc}</div>
             </div>
           ))}
