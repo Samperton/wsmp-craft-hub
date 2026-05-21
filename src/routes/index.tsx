@@ -270,54 +270,24 @@ function InfoTabs() {
             </p>
             <form
               className="mt-6 grid gap-3 max-w-xl"
-              onSubmit={async (e) => {
+              onSubmit={(e) => {
                 e.preventDefault();
-                const form = e.target as HTMLFormElement;
-                const formData = new FormData(form);
-                const username = String(formData.get("username") ?? "");
-                const title = String(formData.get("title") ?? "");
-                const body = String(formData.get("body") ?? "");
-                const webhookUrl = import.meta.env.VITE_DISCORD_WEBHOOK_URL;
-                try {
-                  const res = await fetch(webhookUrl, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      username: "WSMP Bug Reports",
-                      embeds: [
-                        {
-                          title: `🐛 ${title}`,
-                          description: body,
-                          color: 0xed4245,
-                          fields: [{ name: "In-game username", value: username, inline: true }],
-                          timestamp: new Date().toISOString(),
-                        },
-                      ],
-                    }),
-                  });
-                  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
-                  toast.success("Bug report sent", { description: "Thanks — staff will review it shortly." });
-                  form.reset();
-                } catch (err) {
-                  toast.error("Failed to send report", { description: err instanceof Error ? err.message : "Please try again." });
-                }
+                toast.success("Bug report sent", { description: "Thanks — staff will review it shortly." });
+                (e.target as HTMLFormElement).reset();
               }}
             >
               <input
                 required
-                name="username"
                 placeholder="In-game username"
                 className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               />
               <input
                 required
-                name="title"
                 placeholder="Short title (e.g. shop GUI not opening)"
                 className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               />
               <textarea
                 required
-                name="body"
                 rows={5}
                 placeholder="Steps to reproduce, coordinates, screenshots…"
                 className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
