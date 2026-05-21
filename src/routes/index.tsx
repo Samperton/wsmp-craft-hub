@@ -107,8 +107,8 @@ function Hero() {
           University Economy Survival · Java & Bedrock
         </div>
 
-        <h1 className="mt-6 font-minecraft text-5xl md:text-7xl leading-[1.15] text-slate-deep">
-          <span className="text-primary">W</span>SMP
+        <h1 className="mt-6 font-minecraft text-5xl md:text-7xl leading-[1.15]">
+          <span className="text-primary">W</span><span className="text-white text-shadow-minecraft">SMP</span>
         </h1>
         <p className="mt-6 mx-auto max-w-2xl text-lg md:text-xl text-slate-soft">
           Whether you enjoy competing for economic advantage or casual Minecraft play,
