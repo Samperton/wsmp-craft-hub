@@ -87,7 +87,7 @@
   .font-pixel { font-family: var(--font-pixel); letter-spacing: 0.02em; }
   .font-minecraft { font-family: var(--font-minecraft); letter-spacing: 0.02em; }
   .text-shadow-minecraft {
-    text-shadow: 2px 2px 0 #000;
+    text-shadow: 0.125em 0.083em 0 #000;
   }
   .font-mono { font-family: var(--font-mono); }
   .bg-gradient-primary { background: var(--gradient-primary); }
