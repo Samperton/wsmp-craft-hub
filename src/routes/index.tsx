@@ -273,7 +273,7 @@ function Footer() {
     <footer className="border-t border-border bg-slate-deep text-background">
       <div className="mx-auto max-w-6xl px-6 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <div className="font-pixel text-xl">
+          <div className="font-minecraft text-shadow-minecraft text-2xl">
             <span className="text-primary">W</span>SMP
           </div>
           <p className="mt-2 text-sm text-background/70">University Economy Survival Minecraft Server</p>
