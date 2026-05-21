@@ -24,7 +24,7 @@ function Logo() {
   return (
     <div className="font-minecraft text-2xl md:text-3xl tracking-tight flex items-center">
       <span className="text-primary">W</span>
-      <span className="text-foreground">SMP</span>
+      <span className="text-white text-shadow-minecraft">SMP</span>
     </div>
   );
 }
