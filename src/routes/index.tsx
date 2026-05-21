@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
 
 function Logo() {
   return (
-    <div className="font-pixel text-2xl md:text-3xl tracking-tight flex items-center">
+    <div className="font-minecraft text-shadow-minecraft text-2xl md:text-3xl tracking-tight flex items-center">
       <span className="text-primary">W</span>
       <span className="text-foreground">SMP</span>
     </div>
