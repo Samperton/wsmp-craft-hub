@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
 
 function Logo() {
   return (
-    <div className="font-minecraft text-2xl md:text-3xl tracking-tight flex items-center">
+    <div className="font-minecraft text-2xl md:text-3xl tracking-tight flex items-center text-shadow-minecraft">
       <span className="text-primary">W</span>
       <span className="text-white text-shadow-minecraft">SMP</span>
     </div>
@@ -107,7 +107,7 @@ function Hero() {
           University Economy Survival · Java & Bedrock
         </div>
 
-        <h1 className="mt-6 font-minecraft text-5xl md:text-7xl leading-[1.15]">
+        <h1 className="mt-6 font-minecraft text-5xl md:text-7xl leading-[1.15] text-shadow-minecraft">
           <span className="text-primary">W</span><span className="text-white text-shadow-minecraft">SMP</span>
         </h1>
         <p className="mt-6 mx-auto max-w-2xl text-lg md:text-xl text-slate-soft">
@@ -273,7 +273,7 @@ function Footer() {
     <footer className="border-t border-border bg-slate-deep text-background">
       <div className="mx-auto max-w-6xl px-6 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <div className="font-minecraft text-2xl">
+          <div className="font-minecraft text-2xl text-shadow-minecraft">
             <span className="text-primary">W</span><span className="text-white text-shadow-minecraft">SMP</span>
           </div>
           <p className="mt-2 text-sm text-background/70">University Economy Survival Minecraft Server</p>
