@@ -107,7 +107,7 @@ function Hero() {
           University Economy Survival · Java & Bedrock
         </div>
 
-        <h1 className="mt-6 font-pixel text-4xl md:text-6xl leading-[1.15] text-slate-deep">
+        <h1 className="mt-6 font-minecraft text-shadow-minecraft text-5xl md:text-7xl leading-[1.15] text-slate-deep">
           <span className="text-primary">W</span>SMP
         </h1>
         <p className="mt-6 mx-auto max-w-2xl text-lg md:text-xl text-slate-soft">
