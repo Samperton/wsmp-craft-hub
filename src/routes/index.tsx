@@ -270,24 +270,43 @@ function InfoTabs() {
             </p>
             <form
               className="mt-6 grid gap-3 max-w-xl"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                toast.success("Bug report sent", { description: "Thanks — staff will review it shortly." });
-                (e.target as HTMLFormElement).reset();
+                const form = e.target as HTMLFormElement;
+                const data = new FormData(form);
+                try {
+                  const res = await fetch(import.meta.env.DISCORD_WEBHOOK_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      username: data.get("username"),
+                      title: data.get("title"),
+                      body: data.get("body"),
+                    }),
+                  });
+                  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                  toast.success("Bug report sent", { description: "Thanks — staff will review it shortly." });
+                  form.reset();
+                } catch (err) {
+                  toast.error("Failed to send report", { description: (err as Error).message });
+                }
               }}
             >
               <input
                 required
+                name="username"
                 placeholder="In-game username"
                 className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               />
               <input
                 required
+                name="title"
                 placeholder="Short title (e.g. shop GUI not opening)"
                 className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               />
               <textarea
                 required
+                name="body"
                 rows={5}
                 placeholder="Steps to reproduce, coordinates, screenshots…"
                 className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
