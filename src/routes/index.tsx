@@ -190,18 +190,53 @@ function InfoTabs() {
         <TabsContent value="rules" className="mt-6">
           <Card className="p-6 md:p-8 border-2 border-border shadow-soft">
             <h3 className="font-pixel text-base text-slate-deep">Community rules</h3>
-            <ul className="mt-5 grid gap-3 md:grid-cols-2">
+            <ul className="mt-5 grid gap-3">
               {[
-                "Be respectful — no harassment, hate speech, or slurs.",
-                "No griefing or stealing outside PvP zones.",
-                "No cheats, X-ray, autoclickers, or exploit abuse.",
-                "Keep chat English-friendly and SFW.",
-                "Claim your land — unclaimed builds aren't protected.",
-                "Report issues to staff via Discord or the bug form.",
+                { rule: "Be respectful and understanding of how others would like to be treated." },
+                { rule: "No hate speech, slurs, or hateful imagery in builds." },
+                { rule: "No chat spam, including large ASCII images." },
+                {
+                  rule: "No griefing (including but not limited to: lag machines, destructive/malicious intent, theft).",
+                  sub: [
+                    "Chunk loaders are banned to reduce lag. If a player-built farm puts too much strain on the server you may be asked to change/remove it.",
+                  ],
+                },
+                { rule: "No cheats, exploits, autoclickers, macros, or automated scripts of any kind." },
+                { rule: "Certain client-side addons/mods like Litematica and Fullbright are allowed as long as they don't break any of the other rules. Contact an Admin if you have a client-side mod you would like to use!" },
+                {
+                  rule: "Players are encouraged to collaborate and share resources! In the interest of fairness for individuals, \"groups\" are limited to 5 players.",
+                  sub: [
+                    "A \"group\" is a team of players who pool resources, create farms together, and have the goal of being at the top of the leaderboard.",
+                  ],
+                },
+                {
+                  rule: "AFK and idling (not making any actions or movements in game) is limited to 15 minutes. AFK penalties will not affect those who leave for short periods like to get food. Abuse of the AFK system to gain an economic advantage is against the rules and will be grounds for action. Do not bypass autokick in any way; using methods including but not limited to: re-joining to AFK again, aforementioned macros, or AFK machines.",
+                  sub: [
+                    "Farms that require you to be in one area are allowed, but beware the risk of appearing to be AFK.",
+                    "Repeating actions like mining, mob farming, XP farming, etc. are allowed, but only in accordance to previous rules.",
+                    "Admins may check if you are AFK, and repeated AFK behaviour will result in action.",
+                    "Rules like AFK are important — we want players to thrive in a competitive environment where their peers are actively playing the game. It's more fun for everyone when players are active!",
+                  ],
+                },
+                {
+                  rule: "Respect the staff and their decisions. All rules and decisions are made in the interest of fairness, community safety, and gameplay quality.",
+                  sub: ["Staff reserve the right to mute based on text activity."],
+                },
+                { rule: "Staff reserve the right to add more rules to the list at any point if necessary." },
+                { rule: "This is an independent project, so please understand that the staff will address any server or individual problems when we can. Please have patience and refrain from repeatedly asking staff when something will be fixed." },
               ].map((r, i) => (
                 <li key={i} className="flex gap-3 rounded-lg border border-border p-3">
                   <span className="font-pixel text-primary text-xs mt-0.5">#{(i + 1).toString().padStart(2, "0")}</span>
-                  <span className="text-sm text-slate-soft">{r}</span>
+                  <div className="flex-1">
+                    <span className="text-sm text-slate-soft">{r.rule}</span>
+                    {r.sub && (
+                      <ul className="mt-2 ml-4 space-y-1 list-disc list-outside text-sm text-slate-soft/90">
+                        {r.sub.map((s, j) => (
+                          <li key={j}>{s}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
