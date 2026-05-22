@@ -388,6 +388,51 @@ function InfoTabs() {
             </form>
           </Card>
         </TabsContent>
+
+        <TabsContent value="player" className="mt-6">
+          <Card className="p-6 md:p-8 border-2 border-border shadow-soft">
+            <h3 className="font-pixel text-base text-slate-deep">Report a player</h3>
+            <p className="mt-3 text-sm text-slate-soft max-w-xl">
+              Saw cheating, harassment, or rule-breaking? Send staff a detailed report — include the player's username, what happened, and any evidence (screenshots, coordinates, timestamps).
+            </p>
+            <form
+              className="mt-6 grid gap-3 max-w-xl"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const data = new FormData(form);
+                const webhook = import.meta.env.VITE_PLAYER_REPORT_WEBHOOK_URL;
+                if (!webhook) {
+                  toast.error("Reports not configured", { description: "VITE_PLAYER_REPORT_WEBHOOK_URL is missing." });
+                  return;
+                }
+                try {
+                  const reportContent = `**New Player Report Submitted!**\n\n**Reporter:** ${data.get("username")}\n**Reported Player:** ${data.get("reported")}\n**Details:**\n${data.get("body")}`;
+                  const res = await fetch(webhook, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      username: "Player Report Tracker",
+                      content: reportContent,
+                    }),
+                  });
+                  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                  toast.success("Report sent", { description: "Thanks — staff will review it shortly." });
+                  form.reset();
+                } catch (err) {
+                  toast.error("Failed to send report", { description: (err as Error).message });
+                }
+              }}
+            >
+              <input required name="username" placeholder="Your in-game username" className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <input required name="reported" placeholder="Reported player's username" className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <textarea required name="body" rows={5} placeholder="What happened? Include evidence, coordinates, timestamps…" className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <Button type="submit" className="bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep w-fit">
+                Submit report <ArrowRight className="h-4 w-4" />
+              </Button>
+            </form>
+          </Card>
+        </TabsContent>
       </Tabs>
     </section>
   );
