@@ -1,0 +1,6 @@
+[
+  { "name": "Economy Survival", "description": "Earn in-game currency from selling resources at the server shop." },
+  { "name": "Land Claims", "description": "Use a golden shovel to protect your builds from griefing." },
+  { "name": "AFK Timer", "description": "15-minute AFK limit to keep gameplay fair and active." },
+  { "name": "Group Cap", "description": "Teams capped at 5 players to keep the leaderboard competitive." }
+]

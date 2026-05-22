@@ -1,12 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Copy, Check, Users, Server, Shield, Bug, UserPlus, BookOpen, ArrowRight } from "lucide-react";
+import { Copy, Check, Users, Server, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import heroBg from "@/assets/hero-bg.jpg";
+import pluginsData from "@/data/plugins.json";
+import gameplayData from "@/data/gameplay-changes.json";
+
+// TODO: update when finalized — currently Sept 4, 2025 6pm CST
+const SEASON_START = new Date("2025-09-04T18:00:00-06:00");
+const DISCORD_INVITE = "https://dsc.gg/w-smp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -167,18 +173,27 @@ function InfoTabs() {
       </div>
 
       <Tabs defaultValue="join" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto bg-secondary p-1 rounded-xl">
-          <TabsTrigger value="join" className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+        <TabsList className="flex flex-wrap w-full h-auto bg-secondary p-1 rounded-xl gap-1">
+          <TabsTrigger value="join" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <BookOpen className="h-4 w-4 mr-2" /> How to Join
           </TabsTrigger>
-          <TabsTrigger value="rules" className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+          <TabsTrigger value="rules" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <Shield className="h-4 w-4 mr-2" /> Server Rules
           </TabsTrigger>
-          <TabsTrigger value="staff" className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+          <TabsTrigger value="plugins" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+            <Puzzle className="h-4 w-4 mr-2" /> Plugins
+          </TabsTrigger>
+          <TabsTrigger value="gameplay" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+            <Sparkles className="h-4 w-4 mr-2" /> Gameplay
+          </TabsTrigger>
+          <TabsTrigger value="staff" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <UserPlus className="h-4 w-4 mr-2" /> Staff Application
           </TabsTrigger>
-          <TabsTrigger value="bug" className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+          <TabsTrigger value="bug" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <Bug className="h-4 w-4 mr-2" /> Report a Bug
+          </TabsTrigger>
+          <TabsTrigger value="player" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+            <Flag className="h-4 w-4 mr-2" /> Report a Player
           </TabsTrigger>
         </TabsList>
 
@@ -262,6 +277,42 @@ function InfoTabs() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="plugins" className="mt-6">
+          <Card className="p-6 md:p-8 border-2 border-border shadow-soft">
+            <h3 className="font-pixel text-base text-slate-deep">Installed plugins</h3>
+            <p className="mt-3 text-sm text-slate-soft max-w-xl">The plugins that shape gameplay on WSMP.</p>
+            <ul className="mt-5 grid gap-3 md:grid-cols-2">
+              {pluginsData.map((p) => (
+                <li key={p.name} className="rounded-lg border border-border p-3">
+                  <div className="flex items-center gap-2">
+                    <Puzzle className="h-4 w-4 text-primary" />
+                    <span className="font-semibold text-foreground">{p.name}</span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-soft">{p.description}</p>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="gameplay" className="mt-6">
+          <Card className="p-6 md:p-8 border-2 border-border shadow-soft">
+            <h3 className="font-pixel text-base text-slate-deep">Gameplay changes</h3>
+            <p className="mt-3 text-sm text-slate-soft max-w-xl">Tweaks and custom rules that make WSMP different from vanilla Minecraft.</p>
+            <ul className="mt-5 grid gap-3">
+              {gameplayData.map((g) => (
+                <li key={g.name} className="rounded-lg border border-border p-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <span className="font-semibold text-foreground">{g.name}</span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-soft">{g.description}</p>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="staff" className="mt-6">
           <Card className="p-6 md:p-8 border-2 border-border shadow-soft">
             <h3 className="font-pixel text-base text-slate-deep">Apply to join the staff team</h3>
@@ -337,6 +388,51 @@ function InfoTabs() {
             </form>
           </Card>
         </TabsContent>
+
+        <TabsContent value="player" className="mt-6">
+          <Card className="p-6 md:p-8 border-2 border-border shadow-soft">
+            <h3 className="font-pixel text-base text-slate-deep">Report a player</h3>
+            <p className="mt-3 text-sm text-slate-soft max-w-xl">
+              Saw cheating, harassment, or rule-breaking? Send staff a detailed report — include the player's username, what happened, and any evidence (screenshots, coordinates, timestamps).
+            </p>
+            <form
+              className="mt-6 grid gap-3 max-w-xl"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const form = e.target as HTMLFormElement;
+                const data = new FormData(form);
+                const webhook = import.meta.env.VITE_PLAYER_REPORT_WEBHOOK_URL;
+                if (!webhook) {
+                  toast.error("Reports not configured", { description: "VITE_PLAYER_REPORT_WEBHOOK_URL is missing." });
+                  return;
+                }
+                try {
+                  const reportContent = `**New Player Report Submitted!**\n\n**Reporter:** ${data.get("username")}\n**Reported Player:** ${data.get("reported")}\n**Details:**\n${data.get("body")}`;
+                  const res = await fetch(webhook, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      username: "Player Report Tracker",
+                      content: reportContent,
+                    }),
+                  });
+                  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                  toast.success("Report sent", { description: "Thanks — staff will review it shortly." });
+                  form.reset();
+                } catch (err) {
+                  toast.error("Failed to send report", { description: (err as Error).message });
+                }
+              }}
+            >
+              <input required name="username" placeholder="Your in-game username" className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <input required name="reported" placeholder="Reported player's username" className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <textarea required name="body" rows={5} placeholder="What happened? Include evidence, coordinates, timestamps…" className="rounded-md border border-input bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <Button type="submit" className="bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep w-fit">
+                Submit report <ArrowRight className="h-4 w-4" />
+              </Button>
+            </form>
+          </Card>
+        </TabsContent>
       </Tabs>
     </section>
   );
@@ -361,10 +457,120 @@ function Footer() {
   );
 }
 
+function SeasonCountdown() {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = SEASON_START.getTime() - now;
+  const live = diff <= 0;
+  const d = Math.max(0, Math.floor(diff / 86400000));
+  const h = Math.max(0, Math.floor((diff % 86400000) / 3600000));
+  const m = Math.max(0, Math.floor((diff % 3600000) / 60000));
+  const s = Math.max(0, Math.floor((diff % 60000) / 1000));
+  const tiles: [string, number][] = [["Days", d], ["Hours", h], ["Mins", m], ["Secs", s]];
+
+  return (
+    <section className="mx-auto max-w-5xl px-6 pt-16">
+      <Card className="p-6 md:p-8 border-2 border-border shadow-soft text-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-slate-soft">
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          Next Season
+        </div>
+        <h2 className="mt-4 font-pixel text-xl md:text-2xl text-slate-deep">
+          {live ? "Season is live — jump in!" : "Countdown to Season Start"}
+        </h2>
+        <p className="mt-2 text-sm text-slate-soft">
+          {SEASON_START.toLocaleString("en-US", { dateStyle: "long", timeStyle: "short", timeZone: "America/Chicago" })} CST
+          <span className="opacity-70"> · date provisional</span>
+        </p>
+        {!live && (
+          <div className="mt-6 grid grid-cols-4 gap-3 max-w-xl mx-auto">
+            {tiles.map(([label, value]) => (
+              <div key={label} className="rounded-lg border-2 border-slate-deep bg-card p-3 shadow-pixel">
+                <div className="font-minecraft text-2xl md:text-3xl text-primary text-shadow-minecraft">
+                  {value.toString().padStart(2, "0")}
+                </div>
+                <div className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">{label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+    </section>
+  );
+}
+
+function DiscordCard() {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(DISCORD_INVITE);
+      setCopied(true);
+      toast.success("Discord link copied", { description: DISCORD_INVITE });
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Couldn't copy — long-press to copy manually");
+    }
+  };
+
+  return (
+    <section className="mx-auto max-w-5xl px-6 pt-12">
+      <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-gradient-to-br from-card to-secondary">
+        <div className="grid gap-6 md:grid-cols-2 md:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-slate-soft">
+              <MessageCircle className="h-3.5 w-3.5 text-primary" />
+              Community
+            </div>
+            <h2 className="mt-4 font-pixel text-xl md:text-2xl text-slate-deep">Join the Discord</h2>
+            <p className="mt-3 text-sm text-slate-soft">
+              Chat with players, get announcements, and link your Minecraft account for in-game perks.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button asChild className="bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep">
+                <a href={DISCORD_INVITE} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle className="h-4 w-4" /> Join Discord
+                </a>
+              </Button>
+              <Button variant="outline" onClick={copy} className="border-2 border-slate-deep">
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copied ? "Copied" : "Copy invite"}
+              </Button>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground font-mono">{DISCORD_INVITE}</p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-5">
+            <h3 className="font-pixel text-sm text-slate-deep">Link your Minecraft account</h3>
+            <ol className="mt-4 space-y-3">
+              {[
+                { t: "In Minecraft", d: <>Run <code className="font-mono bg-secondary px-1.5 py-0.5 rounded text-foreground">/discord link</code> in chat.</> },
+                { t: "Copy the code", d: "The bot will reply with a one-time number." },
+                { t: "In Discord", d: <>Paste the code in <code className="font-mono bg-secondary px-1.5 py-0.5 rounded text-foreground">#mc-link</code>.</> },
+              ].map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="font-pixel text-primary text-xs w-6 shrink-0">0{i + 1}</span>
+                  <div className="text-sm">
+                    <div className="font-semibold text-foreground">{step.t}</div>
+                    <div className="text-slate-soft">{step.d}</div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </Card>
+    </section>
+  );
+}
+
 function Index() {
   return (
     <main className="min-h-screen">
       <Hero />
+      <SeasonCountdown />
+      <DiscordCard />
       <InfoTabs />
       <Footer />
       <Toaster />
