@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import heroBg from "@/assets/hero-bg.jpg";
-import { Users } from "lucide-react"; // Ensure your Lucide icon import is present
 
 export const Route = createFileRoute("/")({
   head: () => ({
