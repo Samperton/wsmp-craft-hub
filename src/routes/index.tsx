@@ -1,12 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Copy, Check, Users, Server, Shield, Bug, UserPlus, BookOpen, ArrowRight } from "lucide-react";
+import { Copy, Check, Users, Server, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import heroBg from "@/assets/hero-bg.jpg";
+import pluginsData from "@/data/plugins.json";
+import gameplayData from "@/data/gameplay-changes.json";
+
+// TODO: update when finalized — currently Sept 4, 2025 6pm CST
+const SEASON_START = new Date("2025-09-04T18:00:00-06:00");
+const DISCORD_INVITE = "https://dsc.gg/w-smp";
 
 export const Route = createFileRoute("/")({
   head: () => ({
