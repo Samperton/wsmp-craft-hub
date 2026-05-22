@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "WSMP" },
+      { name: "description", content: "WSMP Hub is a university Minecraft server club website featuring a modern landing page." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "WSMP" },
+      { property: "og:description", content: "WSMP Hub is a university Minecraft server club website featuring a modern landing page." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "WSMP" },
+      { name: "twitter:description", content: "WSMP Hub is a university Minecraft server club website featuring a modern landing page." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9044318b-2aae-4e33-a4d2-658040b2bd21/id-preview-43a1914f--28ffe618-4673-4cd2-adb8-d1c50c6e1dc8.lovable.app-1779408152868.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9044318b-2aae-4e33-a4d2-658040b2bd21/id-preview-43a1914f--28ffe618-4673-4cd2-adb8-d1c50c6e1dc8.lovable.app-1779408152868.png" },
     ],
     links: [
       {
