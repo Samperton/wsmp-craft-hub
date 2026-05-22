@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import heroBg from "@/assets/hero-bg.jpg";
+import { Users } from "lucide-react"; // Ensure your Lucide icon import is present
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,15 +31,34 @@ function Logo() {
 }
 
 function PlayerCounter() {
-  // Live counter slot — wire to a status API later
   const [count, setCount] = useState<number | null>(null);
   const [online, setOnline] = useState(true);
 
   useEffect(() => {
-    // Placeholder simulation for the "slot". Replace with real API call.
-    const tick = () => setCount(Math.floor(18 + Math.random() * 14));
-    tick();
-    const id = setInterval(tick, 5000);
+    const fetchServerStatus = () => {
+      fetch("https://api.mcsrvstat.us/2/w-smp.org")
+        .then((res) => res.json())
+        .then((data) => {
+          setOnline(data.online);
+          if (data.online && data.players) {
+            setCount(data.players.online);
+          } else {
+            setCount(null);
+          }
+        })
+        .catch((err) => {
+          console.error("Error fetching Minecraft server status:", err);
+          setOnline(false);
+          setCount(null);
+        });
+    };
+
+    // Pull data immediately when the component mounts
+    fetchServerStatus();
+
+    // Check for updates every 60 seconds
+    // (api.mcsrvstat.us caches data internally for 5 minutes, so 60s is perfectly safe)
+    const id = setInterval(fetchServerStatus, 60000);
     return () => clearInterval(id);
   }, []);
 
@@ -50,7 +70,7 @@ function PlayerCounter() {
       </span>
       <Users className="h-4 w-4 text-slate-soft" />
       <span className="font-mono text-sm font-semibold text-foreground">
-        {count ?? "—"} <span className="text-muted-foreground font-normal">players online</span>
+        {online && count !== null ? count : "—"} <span className="text-muted-foreground font-normal">players online</span>
       </span>
     </div>
   );
