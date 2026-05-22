@@ -275,13 +275,14 @@ function InfoTabs() {
                 const form = e.target as HTMLFormElement;
                 const data = new FormData(form);
                 try {
+                  const reportContent = `**New Bug Report Submitted!**\n\n**Reporter:** ${data.get("username")}\n**Issue Title:** ${data.get("title")}\n**Description Details:**\n${data.get("body")}`;
+                  
                   const res = await fetch(import.meta.env.VITE_DISCORD_WEBHOOK_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                      username: data.get("username"),
-                      title: data.get("title"),
-                      body: data.get("body"),
+                      username: "Server Bug Tracker", // Controls the name of the bot user in Discord
+                      content: reportContent,         // Discord reads this key perfectly
                     }),
                   });
                   if (!res.ok) throw new Error(`HTTP ${res.status}`);
