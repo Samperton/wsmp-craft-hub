@@ -169,7 +169,7 @@ function InfoTabs() {
             <ol className="mt-5 space-y-4">
               {[
                 { t: "Launch Minecraft", d: "Open Java Edition 1.21+ or Bedrock Edition on any platform." },
-                { t: "Add the server", d: "Use IP w-smp.org — Bedrock players use the same address with default port." },
+                { t: "Add the server", d: "Use IP w-smp.org — Bedrock players use the same address with port 25565." },
                 { t: "Hit play", d: "Spawn into the Social Hub, read the rules, and meet the community." },
               ].map((s, i) => (
                 <li key={i} className="flex gap-4">
