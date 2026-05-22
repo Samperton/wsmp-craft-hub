@@ -457,10 +457,120 @@ function Footer() {
   );
 }
 
+function SeasonCountdown() {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const diff = SEASON_START.getTime() - now;
+  const live = diff <= 0;
+  const d = Math.max(0, Math.floor(diff / 86400000));
+  const h = Math.max(0, Math.floor((diff % 86400000) / 3600000));
+  const m = Math.max(0, Math.floor((diff % 3600000) / 60000));
+  const s = Math.max(0, Math.floor((diff % 60000) / 1000));
+  const tiles: [string, number][] = [["Days", d], ["Hours", h], ["Mins", m], ["Secs", s]];
+
+  return (
+    <section className="mx-auto max-w-5xl px-6 pt-16">
+      <Card className="p-6 md:p-8 border-2 border-border shadow-soft text-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-xs font-medium text-slate-soft">
+          <Sparkles className="h-3.5 w-3.5 text-primary" />
+          Next Season
+        </div>
+        <h2 className="mt-4 font-pixel text-xl md:text-2xl text-slate-deep">
+          {live ? "Season is live — jump in!" : "Countdown to Season Start"}
+        </h2>
+        <p className="mt-2 text-sm text-slate-soft">
+          {SEASON_START.toLocaleString("en-US", { dateStyle: "long", timeStyle: "short", timeZone: "America/Chicago" })} CST
+          <span className="opacity-70"> · date provisional</span>
+        </p>
+        {!live && (
+          <div className="mt-6 grid grid-cols-4 gap-3 max-w-xl mx-auto">
+            {tiles.map(([label, value]) => (
+              <div key={label} className="rounded-lg border-2 border-slate-deep bg-card p-3 shadow-pixel">
+                <div className="font-minecraft text-2xl md:text-3xl text-primary text-shadow-minecraft">
+                  {value.toString().padStart(2, "0")}
+                </div>
+                <div className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">{label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+    </section>
+  );
+}
+
+function DiscordCard() {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(DISCORD_INVITE);
+      setCopied(true);
+      toast.success("Discord link copied", { description: DISCORD_INVITE });
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Couldn't copy — long-press to copy manually");
+    }
+  };
+
+  return (
+    <section className="mx-auto max-w-5xl px-6 pt-12">
+      <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-gradient-to-br from-card to-secondary">
+        <div className="grid gap-6 md:grid-cols-2 md:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-slate-soft">
+              <MessageCircle className="h-3.5 w-3.5 text-primary" />
+              Community
+            </div>
+            <h2 className="mt-4 font-pixel text-xl md:text-2xl text-slate-deep">Join the Discord</h2>
+            <p className="mt-3 text-sm text-slate-soft">
+              Chat with players, get announcements, and link your Minecraft account for in-game perks.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button asChild className="bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep">
+                <a href={DISCORD_INVITE} target="_blank" rel="noopener noreferrer">
+                  <MessageCircle className="h-4 w-4" /> Join Discord
+                </a>
+              </Button>
+              <Button variant="outline" onClick={copy} className="border-2 border-slate-deep">
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                {copied ? "Copied" : "Copy invite"}
+              </Button>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground font-mono">{DISCORD_INVITE}</p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-5">
+            <h3 className="font-pixel text-sm text-slate-deep">Link your Minecraft account</h3>
+            <ol className="mt-4 space-y-3">
+              {[
+                { t: "In Minecraft", d: <>Run <code className="font-mono bg-secondary px-1.5 py-0.5 rounded text-foreground">/discord link</code> in chat.</> },
+                { t: "Copy the code", d: "The bot will reply with a one-time number." },
+                { t: "In Discord", d: <>Paste the code in <code className="font-mono bg-secondary px-1.5 py-0.5 rounded text-foreground">#mc-link</code>.</> },
+              ].map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="font-pixel text-primary text-xs w-6 shrink-0">0{i + 1}</span>
+                  <div className="text-sm">
+                    <div className="font-semibold text-foreground">{step.t}</div>
+                    <div className="text-slate-soft">{step.d}</div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </Card>
+    </section>
+  );
+}
+
 function Index() {
   return (
     <main className="min-h-screen">
       <Hero />
+      <SeasonCountdown />
+      <DiscordCard />
       <InfoTabs />
       <Footer />
       <Toaster />
