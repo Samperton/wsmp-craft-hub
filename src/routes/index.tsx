@@ -275,7 +275,7 @@ function InfoTabs() {
                 const form = e.target as HTMLFormElement;
                 const data = new FormData(form);
                 try {
-                  const res = await fetch(import.meta.env.DISCORD_WEBHOOK_URL, {
+                  const res = await fetch(import.meta.env.VITE_DISCORD_WEBHOOK_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
