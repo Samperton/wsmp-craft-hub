@@ -266,7 +266,7 @@ function InfoTabs() {
             <h3 className="font-pixel text-base text-slate-deep">Report a bug</h3>
             <p className="mt-3 text-sm text-slate-soft max-w-xl">
               Found a duplication glitch, broken plugin, or world issue? Send it our way with as much
-              detail as possible — coordinates, screenshots, and steps to reproduce help us fix things fast.
+              detail as possible — a description, coordinates, and steps to reproduce help us fix things fast.
             </p>
             <form
               className="mt-6 grid gap-3 max-w-xl"
