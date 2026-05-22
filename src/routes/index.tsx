@@ -173,18 +173,27 @@ function InfoTabs() {
       </div>
 
       <Tabs defaultValue="join" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto bg-secondary p-1 rounded-xl">
-          <TabsTrigger value="join" className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+        <TabsList className="flex flex-wrap w-full h-auto bg-secondary p-1 rounded-xl gap-1">
+          <TabsTrigger value="join" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <BookOpen className="h-4 w-4 mr-2" /> How to Join
           </TabsTrigger>
-          <TabsTrigger value="rules" className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+          <TabsTrigger value="rules" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <Shield className="h-4 w-4 mr-2" /> Server Rules
           </TabsTrigger>
-          <TabsTrigger value="staff" className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+          <TabsTrigger value="plugins" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+            <Puzzle className="h-4 w-4 mr-2" /> Plugins
+          </TabsTrigger>
+          <TabsTrigger value="gameplay" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+            <Sparkles className="h-4 w-4 mr-2" /> Gameplay
+          </TabsTrigger>
+          <TabsTrigger value="staff" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <UserPlus className="h-4 w-4 mr-2" /> Staff Application
           </TabsTrigger>
-          <TabsTrigger value="bug" className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+          <TabsTrigger value="bug" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <Bug className="h-4 w-4 mr-2" /> Report a Bug
+          </TabsTrigger>
+          <TabsTrigger value="player" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
+            <Flag className="h-4 w-4 mr-2" /> Report a Player
           </TabsTrigger>
         </TabsList>
 
