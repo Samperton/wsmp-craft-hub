@@ -277,6 +277,42 @@ function InfoTabs() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="plugins" className="mt-6">
+          <Card className="p-6 md:p-8 border-2 border-border shadow-soft">
+            <h3 className="font-pixel text-base text-slate-deep">Installed plugins</h3>
+            <p className="mt-3 text-sm text-slate-soft max-w-xl">The plugins that shape gameplay on WSMP.</p>
+            <ul className="mt-5 grid gap-3 md:grid-cols-2">
+              {pluginsData.map((p) => (
+                <li key={p.name} className="rounded-lg border border-border p-3">
+                  <div className="flex items-center gap-2">
+                    <Puzzle className="h-4 w-4 text-primary" />
+                    <span className="font-semibold text-foreground">{p.name}</span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-soft">{p.description}</p>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="gameplay" className="mt-6">
+          <Card className="p-6 md:p-8 border-2 border-border shadow-soft">
+            <h3 className="font-pixel text-base text-slate-deep">Gameplay changes</h3>
+            <p className="mt-3 text-sm text-slate-soft max-w-xl">Tweaks and custom rules that make WSMP different from vanilla Minecraft.</p>
+            <ul className="mt-5 grid gap-3">
+              {gameplayData.map((g) => (
+                <li key={g.name} className="rounded-lg border border-border p-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <span className="font-semibold text-foreground">{g.name}</span>
+                  </div>
+                  <p className="mt-1 text-sm text-slate-soft">{g.description}</p>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="staff" className="mt-6">
           <Card className="p-6 md:p-8 border-2 border-border shadow-soft">
             <h3 className="font-pixel text-base text-slate-deep">Apply to join the staff team</h3>
