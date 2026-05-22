@@ -1,0 +1,7 @@
+[
+  { "name": "EssentialsX", "description": "Core commands: /home, /tpa, /msg, and more." },
+  { "name": "LuckPerms", "description": "Permissions and rank management." },
+  { "name": "CoreProtect", "description": "Block logging and rollback for grief recovery." },
+  { "name": "DiscordSRV", "description": "Bridges in-game chat with Discord and powers /discord link." },
+  { "name": "GriefPrevention", "description": "Claim chunks to protect your builds." }
+]
