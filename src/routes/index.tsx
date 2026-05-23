@@ -472,36 +472,27 @@ function SeasonCountdown() {
   const tiles: [string, number][] = [["Days", d], ["Hours", h], ["Mins", m], ["Secs", s]];
 
   return (
-    <section className="mx-auto max-w-6xl px-6 pt-20">
-      <Card className="relative overflow-hidden p-8 md:p-14 border-2 border-primary/30 shadow-soft bg-gradient-to-br from-slate-deep to-primary/80 text-background text-center">
-        <div className="inline-flex items-center gap-2 text-background/80">
-          <Sparkles className="h-4 w-4 text-primary-foreground" />
-          <span className="font-pixel text-xs md:text-sm uppercase tracking-[0.3em]">
-            {live ? "Season 1" : "Season 1 begins in"}
-          </span>
-        </div>
-        <h2 className="mt-4 font-minecraft text-3xl md:text-5xl lg:text-6xl text-shadow-minecraft">
-          {live ? "SEASON 1 IS LIVE" : "The Next Era Starts Soon"}
+    <section className="mx-auto max-w-5xl px-6 pt-12">
+      <Card className="relative overflow-hidden p-6 md:p-8 border-2 border-primary/30 shadow-soft bg-gradient-to-br from-slate-deep to-primary/80 text-background text-center">
+        <h2 className="font-minecraft text-2xl md:text-4xl text-shadow-minecraft">
+          {live ? "SEASON 1 IS LIVE" : "Season 1 Starts Soon"}
         </h2>
-        <p className="mt-3 text-sm md:text-base text-background/70">
-          {SEASON_START.toLocaleString("en-US", { dateStyle: "long", timeStyle: "short", timeZone: "America/Chicago" })} CST
-        </p>
         {!live ? (
-          <div className="mt-8 md:mt-10 grid grid-cols-4 gap-3 md:gap-5 max-w-4xl mx-auto">
+          <div className="mt-5 grid grid-cols-4 gap-3 md:gap-4 max-w-2xl mx-auto">
             {tiles.map(([label, value], i) => (
               <div
                 key={label}
-                className={`rounded-lg border-4 border-background/20 bg-background/10 backdrop-blur p-4 md:p-8 shadow-pixel ${i === 3 ? "animate-pulse" : ""}`}
+                className={`rounded-lg border-2 border-background/20 bg-background/10 backdrop-blur p-3 md:p-4 shadow-pixel ${i === 3 ? "animate-pulse" : ""}`}
               >
-                <div className="font-minecraft text-4xl md:text-7xl lg:text-8xl text-background text-shadow-minecraft tabular-nums">
+                <div className="font-minecraft text-2xl md:text-4xl text-background text-shadow-minecraft tabular-nums">
                   {value.toString().padStart(2, "0")}
                 </div>
-                <div className="mt-2 md:mt-3 text-[10px] md:text-sm uppercase tracking-widest text-background/70">{label}</div>
+                <div className="mt-1 text-[10px] md:text-xs uppercase tracking-widest text-background/70">{label}</div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="mt-8 font-pixel text-lg md:text-xl text-background">
+          <p className="mt-4 font-pixel text-base md:text-lg text-background">
             Jump in with IP <span className="font-mono text-primary-foreground">w-smp.org</span>
           </p>
         )}
@@ -509,6 +500,7 @@ function SeasonCountdown() {
     </section>
   );
 }
+
 
 function DiscordCard() {
   const [copied, setCopied] = useState(false);
