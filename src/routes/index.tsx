@@ -479,7 +479,7 @@ function SeasonCountdown() {
           Next Season
         </div>
         <h2 className="mt-4 font-pixel text-xl md:text-2xl text-slate-deep">
-          {live ? "Season is live — jump in!" : "Countdown to Season Start"}
+          {live ? "Season 0 is live — jump in!" : "Countdown to Season Start"}
         </h2>
         <p className="mt-2 text-sm text-slate-soft">
           {SEASON_START.toLocaleString("en-US", { dateStyle: "long", timeStyle: "short", timeZone: "America/Chicago" })} CST
