@@ -170,7 +170,7 @@ function Hero({ onNav }: { onNav: (target: "join" | "gameplay" | "discord") => v
   );
 }
 
-function InfoTabs() {
+function InfoTabs({ value, onValueChange }: { value: string; onValueChange: (v: string) => void }) {
   return (
     <section id="info" className="mx-auto max-w-5xl px-6 py-20">
       <div className="text-center mb-10">
@@ -178,7 +178,7 @@ function InfoTabs() {
         <p className="mt-3 text-slate-soft">Everything you need to jump in, follow the rules, or help run the server.</p>
       </div>
 
-      <Tabs defaultValue="join" className="w-full">
+      <Tabs value={value} onValueChange={onValueChange} className="w-full">
         <TabsList className="flex flex-wrap w-full h-auto bg-secondary p-1 rounded-xl gap-1">
           <TabsTrigger value="join" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <BookOpen className="h-4 w-4 mr-2" /> How to Join
