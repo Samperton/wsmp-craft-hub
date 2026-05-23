@@ -109,7 +109,12 @@ function CopyIpButton() {
   );
 }
 
-function Hero() {
+function Hero({ onNav }: { onNav: (target: "join" | "gameplay" | "discord") => void }) {
+  const cards: { label: string; desc: string; target: "join" | "gameplay" | "discord" }[] = [
+    { label: "PLAY", desc: "Economy Survival", target: "join" },
+    { label: "BUILD", desc: "Easy Land Claims", target: "gameplay" },
+    { label: "CONNECT", desc: "Linked Discord", target: "discord" },
+  ];
   return (
     <section className="relative overflow-hidden">
       <div
@@ -148,15 +153,16 @@ function Hero() {
         </div>
 
         <div className="mt-12 grid grid-cols-3 gap-4 md:gap-8 max-w-2xl mx-auto">
-          {[
-            { label: "PLAY", desc: "Economy Survival" },
-            { label: "BUILD", desc: "Easy Land Claims" },
-            { label: "CONNECT", desc: "Linked Discord" },
-          ].map((f) => (
-            <div key={f.label} className="rounded-xl border border-border bg-card/85 backdrop-blur p-4">
+          {cards.map((f) => (
+            <button
+              key={f.label}
+              type="button"
+              onClick={() => onNav(f.target)}
+              className="text-left rounded-xl border border-border bg-card/85 backdrop-blur p-4 cursor-pointer transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               <div className="font-minecraft text-lg md:text-xl text-primary">{f.label}</div>
               <div className="mt-2 text-xs md:text-sm text-slate-soft">{f.desc}</div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
