@@ -522,7 +522,7 @@ function DiscordCard() {
   };
 
   return (
-    <section className="mx-auto max-w-5xl px-6 pt-12">
+    <section id="discord" className="mx-auto max-w-5xl px-6 pt-12 scroll-mt-20">
       <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-gradient-to-br from-card to-secondary">
         <div className="grid gap-6 md:grid-cols-2 md:items-center">
           <div>
