@@ -109,7 +109,12 @@ function CopyIpButton() {
   );
 }
 
-function Hero() {
+function Hero({ onNav }: { onNav: (target: "join" | "gameplay" | "discord") => void }) {
+  const cards: { label: string; desc: string; target: "join" | "gameplay" | "discord" }[] = [
+    { label: "PLAY", desc: "Economy Survival", target: "join" },
+    { label: "BUILD", desc: "Easy Land Claims", target: "gameplay" },
+    { label: "CONNECT", desc: "Linked Discord", target: "discord" },
+  ];
   return (
     <section className="relative overflow-hidden">
       <div
@@ -148,15 +153,16 @@ function Hero() {
         </div>
 
         <div className="mt-12 grid grid-cols-3 gap-4 md:gap-8 max-w-2xl mx-auto">
-          {[
-            { label: "PLAY", desc: "Economy Survival" },
-            { label: "BUILD", desc: "Easy Land Claims" },
-            { label: "CONNECT", desc: "Linked Discord" },
-          ].map((f) => (
-            <div key={f.label} className="rounded-xl border border-border bg-card/85 backdrop-blur p-4">
+          {cards.map((f) => (
+            <button
+              key={f.label}
+              type="button"
+              onClick={() => onNav(f.target)}
+              className="text-left rounded-xl border border-border bg-card/85 backdrop-blur p-4 cursor-pointer transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               <div className="font-minecraft text-lg md:text-xl text-primary">{f.label}</div>
               <div className="mt-2 text-xs md:text-sm text-slate-soft">{f.desc}</div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
@@ -164,7 +170,7 @@ function Hero() {
   );
 }
 
-function InfoTabs() {
+function InfoTabs({ value, onValueChange }: { value: string; onValueChange: (v: string) => void }) {
   return (
     <section id="info" className="mx-auto max-w-5xl px-6 py-20">
       <div className="text-center mb-10">
@@ -172,7 +178,7 @@ function InfoTabs() {
         <p className="mt-3 text-slate-soft">Everything you need to jump in, follow the rules, or help run the server.</p>
       </div>
 
-      <Tabs defaultValue="join" className="w-full">
+      <Tabs value={value} onValueChange={onValueChange} className="w-full">
         <TabsList className="flex flex-wrap w-full h-auto bg-secondary p-1 rounded-xl gap-1">
           <TabsTrigger value="join" className="flex-1 min-w-[140px] data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary py-2.5">
             <BookOpen className="h-4 w-4 mr-2" /> How to Join
@@ -516,7 +522,7 @@ function DiscordCard() {
   };
 
   return (
-    <section className="mx-auto max-w-5xl px-6 pt-12">
+    <section id="discord" className="mx-auto max-w-5xl px-6 pt-12 scroll-mt-20">
       <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-gradient-to-br from-card to-secondary">
         <div className="grid gap-6 md:grid-cols-2 md:items-center">
           <div>
@@ -566,12 +572,23 @@ function DiscordCard() {
 }
 
 function Index() {
+  const [activeTab, setActiveTab] = useState("join");
+  const handleNav = (target: "join" | "gameplay" | "discord") => {
+    if (target === "discord") {
+      document.getElementById("discord")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    setActiveTab(target);
+    requestAnimationFrame(() => {
+      document.getElementById("info")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
   return (
     <main className="min-h-screen">
-      <Hero />
+      <Hero onNav={handleNav} />
       <SeasonCountdown />
       <DiscordCard />
-      <InfoTabs />
+      <InfoTabs value={activeTab} onValueChange={setActiveTab} />
       <Footer />
       <Toaster />
     </main>
