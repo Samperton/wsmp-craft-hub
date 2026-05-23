@@ -546,7 +546,7 @@ function DiscordCard() {
             <ol className="mt-4 space-y-3">
               {[
                 { t: "In Minecraft", d: <>Run <code className="font-mono bg-secondary px-1.5 py-0.5 rounded text-foreground">/discord link</code> in chat.</> },
-                { t: "Copy the code", d: "The bot will reply with a one-time number." },
+                { t: "Copy the code", d: "You will be given a one-time number." },
                 { t: "In Discord", d: <>Paste the code in <code className="font-mono bg-secondary px-1.5 py-0.5 rounded text-foreground">#mc-link</code>.</> },
               ].map((step, i) => (
                 <li key={i} className="flex gap-3">
