@@ -572,12 +572,23 @@ function DiscordCard() {
 }
 
 function Index() {
+  const [activeTab, setActiveTab] = useState("join");
+  const handleNav = (target: "join" | "gameplay" | "discord") => {
+    if (target === "discord") {
+      document.getElementById("discord")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    setActiveTab(target);
+    requestAnimationFrame(() => {
+      document.getElementById("info")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
   return (
     <main className="min-h-screen">
-      <Hero />
+      <Hero onNav={handleNav} />
       <SeasonCountdown />
       <DiscordCard />
-      <InfoTabs />
+      <InfoTabs value={activeTab} onValueChange={setActiveTab} />
       <Footer />
       <Toaster />
     </main>
