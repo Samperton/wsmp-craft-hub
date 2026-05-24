@@ -177,7 +177,7 @@ function Hero({ onNav }: { onNav: (target: "join" | "gameplay" | "discord") => v
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 bg-card/80 backdrop-blur">
                 <PlayCircle className="h-4 w-4 text-primary" />
-                Watch Trailer
+                What is the WSMP?
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl p-0 border-2 overflow-hidden bg-card">
