@@ -580,7 +580,17 @@ function DiscordCard() {
 }
 
 function Index() {
-  const [activeTab, setActiveTab] = useState("join");
+  const { tab } = Route.useSearch();
+  const [activeTab, setActiveTab] = useState(tab);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.search.includes("tab=")) {
+      requestAnimationFrame(() => {
+        document.getElementById("info")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, []);
+
   const handleNav = (target: "join" | "gameplay" | "discord") => {
     if (target === "discord") {
       document.getElementById("discord")?.scrollIntoView({ behavior: "smooth", block: "start" });
