@@ -1,14 +1,45 @@
-## Make PLAY / BUILD / CONNECT cards interactive
+## Make `/rules` open + scroll to the Rules tab
 
-In `src/routes/index.tsx`:
+The `/rules` route already redirects to `/` with `?tab=rules`. We need the index page to read that param, switch tabs, and scroll down.
 
-1. **Lift tab state**: Convert `InfoTabs` from `defaultValue="join"` to controlled `value`/`onValueChange`. Move the active-tab state up to the `Home` component (or use a small shared store via `useState` + props) so the hero cards can change it.
-2. **Add an id to the Discord section**: Give the `DiscordCard` section wrapper `id="discord"` for anchor scrolling.
-3. **Make the 3 cards buttons**:
-   - `PLAY` → sets active tab to `"join"` and smooth-scrolls to `#info`.
-   - `BUILD` → sets active tab to `"gameplay"` and smooth-scrolls to `#info`.
-   - `CONNECT` → smooth-scrolls to `#discord` (no tab change).
-   - Render each card as a `<button>` with the same visual styling (rounded card, border, hover state added — subtle lift / border-primary on hover, focus-visible ring), preserving the existing label + desc layout.
-4. **Scrolling**: Use `document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })` in the click handler.
+### Problem to fix first
+Lines 16-20 of `src/routes/index.tsx` contain broken code added at module scope (hook calls and JSX outside any component). This will not compile. Remove it.
 
-No data, routing, or backend changes. Pure presentational + local state.
+### Changes
+
+**1. `src/routes/index.tsx`**
+- Delete lines 16-20 (the stray `useSearch`/`activeTab`/`<Tabs>` block).
+- Add `validateSearch` on the route so `?tab=...` is typed and validated:
+  ```ts
+  import { zodValidator, fallback } from "@tanstack/zod-adapter";
+  import { z } from "zod";
+  const searchSchema = z.object({
+    tab: fallback(
+      z.enum(["join","rules","plugins","gameplay","staff","bug","player"]),
+      "join"
+    ).default("join"),
+  });
+  // in createFileRoute("/")({ validateSearch: zodValidator(searchSchema), ... })
+  ```
+- In `Index`, read the param and use it as the initial tab + scroll to `#info` once on mount when a `tab` was supplied:
+  ```ts
+  const { tab } = Route.useSearch();
+  const [activeTab, setActiveTab] = useState(tab);
+  useEffect(() => {
+    if (window.location.search.includes("tab=")) {
+      // small delay so layout is mounted
+      requestAnimationFrame(() =>
+        document.getElementById("info")?.scrollIntoView({ behavior: "smooth", block: "start" })
+      );
+    }
+  }, []);
+  ```
+- Keep existing tab/scroll behavior for the hero cards unchanged.
+
+**2. Install adapter (if missing)**
+`bun add @tanstack/zod-adapter zod` — only if not already in `package.json`.
+
+### Result
+- Visiting `mc.w-smp.org/rules` redirects to `/?tab=rules`, the Rules tab is selected, and the page smoothly scrolls to the Get Started section.
+- Other tab values (`gameplay`, `plugins`, etc.) work the same way for free.
+- No backend/data changes.
