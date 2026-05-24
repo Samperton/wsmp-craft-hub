@@ -173,6 +173,27 @@ function Hero({ onNav }: { onNav: (target: "join" | "gameplay" | "discord") => v
 
         <div className="mt-10 flex flex-col items-center gap-4">
           <CopyIpButton />
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2 bg-card/80 backdrop-blur">
+                <PlayCircle className="h-4 w-4 text-primary" />
+                Watch Trailer
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl p-0 border-2 overflow-hidden bg-card">
+              <DialogTitle className="sr-only">WSMP Server Trailer</DialogTitle>
+              <div className="relative aspect-video w-full">
+                <iframe
+                  className="absolute inset-0 w-full h-full"
+                  src="https://cdnapisec.kaltura.com/p/812561/embedPlaykitJs/uiconf_id/52484262?iframeembed=true&entry_id=1_exco0q39&config"
+                  title="WSMP Server Trailer"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  frameBorder="0"
+                />
+              </div>
+            </DialogContent>
+          </Dialog>
           <div className="md:hidden">
             <PlayerCounter />
           </div>
