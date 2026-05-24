@@ -13,7 +13,12 @@ import gameplayData from "@/data/gameplay-changes.json";
 // TODO: update when finalized — currently Sept 4, 2025 6pm CST
 const SEASON_START = new Date("2026-09-04T19:00:00-05:00");
 const DISCORD_INVITE = "https://dsc.gg/w-smp";
+const search = useSearch({ from: '/' });
+const activeTab = (search as any).tab || "join";
 
+// Then update your tabs block to read it directly:
+<Tabs value={activeTab} className="w-full">
+  
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
