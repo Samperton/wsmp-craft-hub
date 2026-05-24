@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import { useEffect, useState } from "react";
 import { Copy, Check, Users, Server, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,13 +15,14 @@ import gameplayData from "@/data/gameplay-changes.json";
 // TODO: update when finalized — currently Sept 4, 2025 6pm CST
 const SEASON_START = new Date("2026-09-04T19:00:00-05:00");
 const DISCORD_INVITE = "https://dsc.gg/w-smp";
-const search = useSearch({ from: '/' });
-const activeTab = (search as any).tab || "join";
 
-// Then update your tabs block to read it directly:
-<Tabs value={activeTab} className="w-full">
-  
+const TAB_VALUES = ["join", "rules", "plugins", "gameplay", "staff", "bug", "player"] as const;
+const searchSchema = z.object({
+  tab: fallback(z.enum(TAB_VALUES), "join").default("join"),
+});
+
 export const Route = createFileRoute("/")({
+  validateSearch: zodValidator(searchSchema),
   head: () => ({
     meta: [
       { title: "WSMP — Economy Survival Minecraft Server" },
@@ -577,7 +580,17 @@ function DiscordCard() {
 }
 
 function Index() {
-  const [activeTab, setActiveTab] = useState("join");
+  const { tab } = Route.useSearch();
+  const [activeTab, setActiveTab] = useState(tab);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.search.includes("tab=")) {
+      requestAnimationFrame(() => {
+        document.getElementById("info")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, []);
+
   const handleNav = (target: "join" | "gameplay" | "discord") => {
     if (target === "discord") {
       document.getElementById("discord")?.scrollIntoView({ behavior: "smooth", block: "start" });
