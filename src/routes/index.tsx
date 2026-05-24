@@ -12,7 +12,7 @@ import heroBg from "@/assets/hero-bg.jpg";
 import pluginsData from "@/data/plugins.json";
 import gameplayData from "@/data/gameplay-changes.json";
 
-// TODO: update when finalized — currently Sept 4, 2025 6pm CST
+// TODO: update when finalized — currently Sept 4, 2025 7pm CST
 const SEASON_START = new Date("2026-09-04T19:00:00-05:00");
 const DISCORD_INVITE = "https://dsc.gg/w-smp";
 
@@ -33,6 +33,23 @@ export const Route = createFileRoute("/")({
   }),
   component: Index,
 });
+
+export function ServerTrailer() {
+  return (
+    <div className="w-full max-w-4xl mx-auto my-8 px-4">
+      <div className="relative aspect-video w-full rounded-xl overflow-hidden border-2 border-border bg-card shadow-soft">
+        <iframe
+          className="absolute top-0 left-0 w-full h-full"
+          src="https://cdnapisec.kaltura.com/p/812561/embedPlaykitJs/uiconf_id/52484262?iframeembed=true&entry_id=1_exco0q39&config"
+          title="WSMP Server Trailer"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          frameBorder="0"
+        />
+      </div>
+    </div>
+  );
+}
 
 function Logo() {
   return (
