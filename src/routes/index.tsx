@@ -18,7 +18,7 @@ const DISCORD_INVITE = "https://dsc.gg/w-smp";
 
 const TAB_VALUES = ["join", "rules", "plugins", "gameplay", "staff", "bug", "player"] as const;
 const searchSchema = z.object({
-  tab: fallback(z.enum(TAB_VALUES), "join").default("join"),
+  tab: fallback(z.enum(TAB_VALUES), undefined as unknown as (typeof TAB_VALUES)[number]).optional(),
 });
 
 export const Route = createFileRoute("/")({
