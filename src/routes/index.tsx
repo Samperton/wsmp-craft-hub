@@ -581,7 +581,7 @@ function DiscordCard() {
 
 function Index() {
   const { tab } = Route.useSearch();
-  const [activeTab, setActiveTab] = useState(tab);
+  const [activeTab, setActiveTab] = useState(tab ?? "join");
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.search.includes("tab=")) {
