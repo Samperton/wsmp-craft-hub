@@ -621,7 +621,7 @@ function DiscordCard() {
 export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?: boolean } = {}) {
   const search = useSearch({ strict: false }) as { tab?: typeof TAB_VALUES[number] };
   const tab = search.tab;
-  const [activeTab, setActiveTab] = useState(tab ?? "join");
+  const [activeTab, setActiveTab] = useState<string>(tab ?? "join");
   const [trailerOpen, setTrailerOpen] = useState(defaultTrailerOpen);
 
   useEffect(() => {
