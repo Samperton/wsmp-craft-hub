@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useState } from "react";
@@ -135,7 +135,7 @@ function CopyIpButton() {
   );
 }
 
-function Hero({ onNav }: { onNav: (target: "join" | "gameplay" | "discord") => void }) {
+function Hero({ onNav, trailerOpen, onTrailerOpenChange }: { onNav: (target: "join" | "gameplay" | "discord") => void; trailerOpen: boolean; onTrailerOpenChange: (open: boolean) => void }) {
   const cards: { label: string; desc: string; target: "join" | "gameplay" | "discord" }[] = [
     { label: "PLAY", desc: "Economy Survival", target: "join" },
     { label: "BUILD", desc: "Easy Land Claims", target: "gameplay" },
@@ -173,7 +173,7 @@ function Hero({ onNav }: { onNav: (target: "join" | "gameplay" | "discord") => v
 
         <div className="mt-10 flex flex-col items-center gap-4">
           <CopyIpButton />
-          <Dialog>
+          <Dialog open={trailerOpen} onOpenChange={onTrailerOpenChange}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 bg-card/80 backdrop-blur">
                 <PlayCircle className="h-4 w-4 text-primary" />
@@ -618,9 +618,11 @@ function DiscordCard() {
   );
 }
 
-function Index() {
-  const { tab } = Route.useSearch();
-  const [activeTab, setActiveTab] = useState(tab ?? "join");
+export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?: boolean } = {}) {
+  const search = useSearch({ strict: false }) as { tab?: typeof TAB_VALUES[number] };
+  const tab = search.tab;
+  const [activeTab, setActiveTab] = useState<string>(tab ?? "join");
+  const [trailerOpen, setTrailerOpen] = useState(defaultTrailerOpen);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.search.includes("tab=")) {
@@ -629,6 +631,13 @@ function Index() {
       });
     }
   }, []);
+
+  const handleTrailerOpenChange = (open: boolean) => {
+    setTrailerOpen(open);
+    if (!open && typeof window !== "undefined" && window.location.pathname === "/video") {
+      window.history.replaceState(null, "", "/");
+    }
+  };
 
   const handleNav = (target: "join" | "gameplay" | "discord") => {
     if (target === "discord") {
@@ -642,7 +651,7 @@ function Index() {
   };
   return (
     <main className="min-h-screen">
-      <Hero onNav={handleNav} />
+      <Hero onNav={handleNav} trailerOpen={trailerOpen} onTrailerOpenChange={handleTrailerOpenChange} />
       <SeasonCountdown />
       <DiscordCard />
       <InfoTabs value={activeTab} onValueChange={setActiveTab} />
@@ -651,3 +660,8 @@ function Index() {
     </main>
   );
 }
+
+function Index() {
+  return <IndexPage />;
+}
+
