@@ -618,9 +618,11 @@ function DiscordCard() {
   );
 }
 
-function Index() {
-  const { tab } = Route.useSearch();
+export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?: boolean } = {}) {
+  const search = Route.useSearch();
+  const tab = search?.tab;
   const [activeTab, setActiveTab] = useState(tab ?? "join");
+  const [trailerOpen, setTrailerOpen] = useState(defaultTrailerOpen);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.search.includes("tab=")) {
@@ -629,6 +631,13 @@ function Index() {
       });
     }
   }, []);
+
+  const handleTrailerOpenChange = (open: boolean) => {
+    setTrailerOpen(open);
+    if (!open && typeof window !== "undefined" && window.location.pathname === "/video") {
+      window.history.replaceState(null, "", "/");
+    }
+  };
 
   const handleNav = (target: "join" | "gameplay" | "discord") => {
     if (target === "discord") {
@@ -642,7 +651,7 @@ function Index() {
   };
   return (
     <main className="min-h-screen">
-      <Hero onNav={handleNav} />
+      <Hero onNav={handleNav} trailerOpen={trailerOpen} onTrailerOpenChange={handleTrailerOpenChange} />
       <SeasonCountdown />
       <DiscordCard />
       <InfoTabs value={activeTab} onValueChange={setActiveTab} />
@@ -651,3 +660,8 @@ function Index() {
     </main>
   );
 }
+
+function Index() {
+  return <IndexPage />;
+}
+
