@@ -173,7 +173,7 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange }: { onNav: (target: "jo
 
         <div className="mt-10 flex flex-col items-center gap-4">
           <CopyIpButton />
-          <Dialog>
+          <Dialog open={trailerOpen} onOpenChange={onTrailerOpenChange}>
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="gap-2 bg-card/80 backdrop-blur">
                 <PlayCircle className="h-4 w-4 text-primary" />
