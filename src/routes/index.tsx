@@ -622,8 +622,10 @@ function DiscordCard() {
 export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?: boolean } = {}) {
   const search = useSearch({ strict: false }) as { tab?: typeof TAB_VALUES[number] };
   const tab = search.tab;
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>(tab ?? "join");
   const [trailerOpen, setTrailerOpen] = useState(defaultTrailerOpen);
+  const [fadingOut, setFadingOut] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.search.includes("tab=")) {
@@ -650,9 +652,22 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
       document.getElementById("info")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   };
+
+  const handleOpenDashboard = () => {
+    setFadingOut(true);
+    window.setTimeout(() => {
+      navigate({ to: "/dashboard" });
+    }, 450);
+  };
+
   return (
-    <main className="min-h-screen">
-      <Hero onNav={handleNav} trailerOpen={trailerOpen} onTrailerOpenChange={handleTrailerOpenChange} />
+    <main className={`min-h-screen transition-opacity duration-500 ease-in-out ${fadingOut ? "opacity-0" : "opacity-100"}`}>
+      <Hero
+        onNav={handleNav}
+        trailerOpen={trailerOpen}
+        onTrailerOpenChange={handleTrailerOpenChange}
+        onOpenDashboard={handleOpenDashboard}
+      />
       <SeasonCountdown />
       <DiscordCard />
       <InfoTabs value={activeTab} onValueChange={setActiveTab} />
