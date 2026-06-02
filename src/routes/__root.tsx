@@ -133,42 +133,13 @@ function GlobalBackground() {
   );
 }
 
-function FadeOutlet() {
+function PageFader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const [displayed, setDisplayed] = useState(pathname);
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    if (pathname === displayed) return;
-    setVisible(false);
-    const t = setTimeout(() => {
-      setDisplayed(pathname);
-      // next frame to ensure DOM swap before fading back in
-      requestAnimationFrame(() => setVisible(true));
-    }, 400);
-    return () => clearTimeout(t);
-  }, [pathname, displayed]);
-
   return (
-    <div
-      key={displayed}
-      className={`transition-opacity duration-500 ease-in-out ${visible ? "opacity-100" : "opacity-0"}`}
-    >
-      <RouteSwitch path={displayed} />
+    <div key={pathname} className="animate-fade-in">
+      <Outlet />
     </div>
   );
-}
-
-// Render the route tree for the *displayed* path so we can fade out the old
-// page before the URL-driven Outlet swaps it in.
-function RouteSwitch({ path }: { path: string }) {
-  const currentPath = useRouterState({ select: (s) => s.location.pathname });
-  if (path === currentPath) {
-    return <Outlet />;
-  }
-  // During the brief fade-out window the URL has already changed; render
-  // nothing rather than the new route so the cards visibly fade away.
-  return null;
 }
 
 function RootComponent() {
@@ -177,7 +148,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <GlobalBackground />
-      <FadeOutlet />
+      <PageFader />
     </QueryClientProvider>
   );
 }
