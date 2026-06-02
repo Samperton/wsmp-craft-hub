@@ -142,11 +142,6 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange }: { onNav: (target: "jo
   ];
   return (
     <section className="relative overflow-hidden">
-      <div
-        className="absolute inset-0 -z-10 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroBg})` }}
-        aria-hidden
-      />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background/70 via-background/55 to-background" aria-hidden />
 
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pt-6">
@@ -157,12 +152,7 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange }: { onNav: (target: "jo
       </header>
 
       <div className="mx-auto max-w-6xl px-6 pt-20 pb-28 md:pt-28 md:pb-36 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-slate-soft backdrop-blur">
-          <Server className="h-3.5 w-3.5 text-primary" />
-          University Economy Survival · Java & Bedrock
-        </div>
-
-        <h1 className="mt-6 font-minecraft text-5xl md:text-7xl leading-[1.15] text-shadow-minecraft">
+        <h1 className="font-minecraft text-5xl md:text-7xl leading-[1.15] text-shadow-minecraft">
           <span className="text-primary">W</span><span className="text-white text-shadow-minecraft">SMP</span>
         </h1>
         <p className="mt-6 mx-auto max-w-2xl text-lg md:text-xl text-slate-soft">
@@ -210,6 +200,18 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange }: { onNav: (target: "jo
               <div className="mt-2 text-xs md:text-sm text-slate-soft">{f.desc}</div>
             </button>
           ))}
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <Button
+            onClick={onOpenDashboard}
+            size="lg"
+            className="gap-2 bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep"
+          >
+            <LayoutDashboard className="h-4 w-4" />
+            Open Dashboard
+            <ArrowRight className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </section>
