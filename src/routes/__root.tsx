@@ -4,11 +4,15 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import appCss from "../styles.css?url";
+import heroBg from "@/assets/hero-bg.jpg";
+import sunsetBg from "@/assets/sunset-bg.png";
 
 function NotFoundComponent() {
   return (
@@ -112,12 +116,68 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function GlobalBackground() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isSunset = pathname.startsWith("/dashboard");
+  return (
+    <div className="pointer-events-none fixed inset-0 -z-50" aria-hidden>
+      <div
+        className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out"
+        style={{ backgroundImage: `url(${heroBg})`, opacity: isSunset ? 0 : 1 }}
+      />
+      <div
+        className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out"
+        style={{ backgroundImage: `url(${sunsetBg})`, opacity: isSunset ? 1 : 0 }}
+      />
+    </div>
+  );
+}
+
+function FadeOutlet() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [displayed, setDisplayed] = useState(pathname);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    if (pathname === displayed) return;
+    setVisible(false);
+    const t = setTimeout(() => {
+      setDisplayed(pathname);
+      // next frame to ensure DOM swap before fading back in
+      requestAnimationFrame(() => setVisible(true));
+    }, 400);
+    return () => clearTimeout(t);
+  }, [pathname, displayed]);
+
+  return (
+    <div
+      key={displayed}
+      className={`transition-opacity duration-500 ease-in-out ${visible ? "opacity-100" : "opacity-0"}`}
+    >
+      <RouteSwitch path={displayed} />
+    </div>
+  );
+}
+
+// Render the route tree for the *displayed* path so we can fade out the old
+// page before the URL-driven Outlet swaps it in.
+function RouteSwitch({ path }: { path: string }) {
+  const currentPath = useRouterState({ select: (s) => s.location.pathname });
+  if (path === currentPath) {
+    return <Outlet />;
+  }
+  // During the brief fade-out window the URL has already changed; render
+  // nothing rather than the new route so the cards visibly fade away.
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <GlobalBackground />
+      <FadeOutlet />
     </QueryClientProvider>
   );
 }
