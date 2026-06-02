@@ -1,15 +1,14 @@
-import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useSearch, useNavigate } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { Copy, Check, Users, Server, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle } from "lucide-react";
+import { Copy, Check, Users, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import heroBg from "@/assets/hero-bg.jpg";
 import pluginsData from "@/data/plugins.json";
 import gameplayData from "@/data/gameplay-changes.json";
 
@@ -135,7 +134,7 @@ function CopyIpButton() {
   );
 }
 
-function Hero({ onNav, trailerOpen, onTrailerOpenChange }: { onNav: (target: "join" | "gameplay" | "discord") => void; trailerOpen: boolean; onTrailerOpenChange: (open: boolean) => void }) {
+function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenDashboard }: { onNav: (target: "join" | "gameplay" | "discord") => void; trailerOpen: boolean; onTrailerOpenChange: (open: boolean) => void; onOpenDashboard: () => void }) {
   const cards: { label: string; desc: string; target: "join" | "gameplay" | "discord" }[] = [
     { label: "PLAY", desc: "Economy Survival", target: "join" },
     { label: "BUILD", desc: "Easy Land Claims", target: "gameplay" },
@@ -143,11 +142,6 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange }: { onNav: (target: "jo
   ];
   return (
     <section className="relative overflow-hidden">
-      <div
-        className="absolute inset-0 -z-10 bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroBg})` }}
-        aria-hidden
-      />
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background/70 via-background/55 to-background" aria-hidden />
 
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pt-6">
@@ -158,12 +152,7 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange }: { onNav: (target: "jo
       </header>
 
       <div className="mx-auto max-w-6xl px-6 pt-20 pb-28 md:pt-28 md:pb-36 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-slate-soft backdrop-blur">
-          <Server className="h-3.5 w-3.5 text-primary" />
-          University Economy Survival · Java & Bedrock
-        </div>
-
-        <h1 className="mt-6 font-minecraft text-5xl md:text-7xl leading-[1.15] text-shadow-minecraft">
+        <h1 className="font-minecraft text-5xl md:text-7xl leading-[1.15] text-shadow-minecraft">
           <span className="text-primary">W</span><span className="text-white text-shadow-minecraft">SMP</span>
         </h1>
         <p className="mt-6 mx-auto max-w-2xl text-lg md:text-xl text-slate-soft">
@@ -211,6 +200,18 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange }: { onNav: (target: "jo
               <div className="mt-2 text-xs md:text-sm text-slate-soft">{f.desc}</div>
             </button>
           ))}
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <Button
+            onClick={onOpenDashboard}
+            size="lg"
+            className="gap-2 bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep"
+          >
+            <LayoutDashboard className="h-4 w-4" />
+            Open Dashboard
+            <ArrowRight className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </section>
@@ -621,8 +622,10 @@ function DiscordCard() {
 export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?: boolean } = {}) {
   const search = useSearch({ strict: false }) as { tab?: typeof TAB_VALUES[number] };
   const tab = search.tab;
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>(tab ?? "join");
   const [trailerOpen, setTrailerOpen] = useState(defaultTrailerOpen);
+  const [fadingOut, setFadingOut] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.search.includes("tab=")) {
@@ -649,9 +652,22 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
       document.getElementById("info")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   };
+
+  const handleOpenDashboard = () => {
+    setFadingOut(true);
+    window.setTimeout(() => {
+      navigate({ to: "/dashboard" });
+    }, 450);
+  };
+
   return (
-    <main className="min-h-screen">
-      <Hero onNav={handleNav} trailerOpen={trailerOpen} onTrailerOpenChange={handleTrailerOpenChange} />
+    <main className={`min-h-screen transition-opacity duration-500 ease-in-out ${fadingOut ? "opacity-0" : "opacity-100"}`}>
+      <Hero
+        onNav={handleNav}
+        trailerOpen={trailerOpen}
+        onTrailerOpenChange={handleTrailerOpenChange}
+        onOpenDashboard={handleOpenDashboard}
+      />
       <SeasonCountdown />
       <DiscordCard />
       <InfoTabs value={activeTab} onValueChange={setActiveTab} />

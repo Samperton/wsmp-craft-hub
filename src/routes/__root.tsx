@@ -4,11 +4,15 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 
+
 import appCss from "../styles.css?url";
+import heroBg from "@/assets/hero-bg.jpg";
+import sunsetBg from "@/assets/sunset-bg.png";
 
 function NotFoundComponent() {
   return (
@@ -112,12 +116,39 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function GlobalBackground() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isSunset = pathname.startsWith("/dashboard");
+  return (
+    <div className="pointer-events-none fixed inset-0 -z-50" aria-hidden>
+      <div
+        className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out"
+        style={{ backgroundImage: `url(${heroBg})`, opacity: isSunset ? 0 : 1 }}
+      />
+      <div
+        className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out"
+        style={{ backgroundImage: `url(${sunsetBg})`, opacity: isSunset ? 1 : 0 }}
+      />
+    </div>
+  );
+}
+
+function PageFader() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  return (
+    <div key={pathname} className="animate-fade-in">
+      <Outlet />
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <GlobalBackground />
+      <PageFader />
     </QueryClientProvider>
   );
 }
