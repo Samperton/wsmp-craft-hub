@@ -168,24 +168,26 @@ function SequencedTransition() {
   }, [pathname, displayedPath]);
 
   const isSunset = bgPath.startsWith("/dashboard");
+  // Render base layer as the OUTGOING image (always fully opaque) and the
+  // INCOMING image on top fading 0 -> 1. This avoids the midpoint dip you get
+  // when two layers cross-fade their alpha against a dark backdrop.
+  const baseImage = isSunset ? heroBg : sunsetBg;
+  const topImage = isSunset ? sunsetBg : heroBg;
 
   return (
     <>
       <div className="pointer-events-none fixed inset-0 -z-50" aria-hidden>
         <div
-          className="absolute inset-0 bg-cover bg-center transition-opacity ease-in-out"
-          style={{
-            backgroundImage: `url(${heroBg})`,
-            opacity: isSunset ? 0 : 1,
-            transitionDuration: `${BG_FADE_MS}ms`,
-          }}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${baseImage})` }}
         />
         <div
-          className="absolute inset-0 bg-cover bg-center transition-opacity ease-in-out"
+          key={`top-${isSunset ? "sunset" : "day"}`}
+          className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${sunsetBg})`,
-            opacity: isSunset ? 1 : 0,
-            transitionDuration: `${BG_FADE_MS}ms`,
+            backgroundImage: `url(${topImage})`,
+            opacity: isSunset ? 1 : 1,
+            animation: `fade-in-bg ${BG_FADE_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both`,
           }}
         />
       </div>
