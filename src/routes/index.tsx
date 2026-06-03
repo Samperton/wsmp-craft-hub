@@ -141,10 +141,10 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenDashboard }: { on
     { label: "CONNECT", desc: "Linked Discord", target: "discord" },
   ];
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background/70 via-background/55 to-background" aria-hidden />
+    <section className="relative isolate overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/55 to-background" aria-hidden />
 
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pt-6">
+      <header className="relative mx-auto flex max-w-6xl items-center justify-between px-6 pt-6">
         <Logo />
         <div className="hidden md:block">
           <PlayerCounter />
