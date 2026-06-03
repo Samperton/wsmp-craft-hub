@@ -127,9 +127,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-const FADE_OUT_MS = 500;
-const BG_FADE_MS = 900;
-const FADE_IN_MS = 700;
+const FADE_OUT_MS = 600;
+const BG_FADE_MS = 2200;
+const FADE_IN_MS = 800;
 
 function SequencedTransition() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
