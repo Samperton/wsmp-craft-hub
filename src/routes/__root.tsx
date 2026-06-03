@@ -131,10 +131,15 @@ const FADE_OUT_MS = 600;
 const BG_FADE_MS = 2200;
 const FADE_IN_MS = 800;
 
+type BgKind = "day" | "sunset";
+const bgFor = (path: string): BgKind => (path.startsWith("/dashboard") ? "sunset" : "day");
+const bgImage = (kind: BgKind) => (kind === "sunset" ? sunsetBg : heroBg);
+
 function SequencedTransition() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [displayedPath, setDisplayedPath] = useState(pathname);
-  const [bgPath, setBgPath] = useState(pathname);
+  const [currentBg, setCurrentBg] = useState<BgKind>(bgFor(pathname));
+  const [prevBg, setPrevBg] = useState<BgKind>(bgFor(pathname));
   const [contentOpacity, setContentOpacity] = useState(1);
   const [contentDuration, setContentDuration] = useState(FADE_IN_MS);
 
@@ -146,8 +151,10 @@ function SequencedTransition() {
     setContentOpacity(0);
 
     const t1 = setTimeout(() => {
-      // Phase 2: crossfade background
-      setBgPath(pathname);
+      // Phase 2: crossfade background (only if it actually changes)
+      const nextBg = bgFor(pathname);
+      setPrevBg(currentBg);
+      setCurrentBg(nextBg);
 
       const t2 = setTimeout(() => {
         // Phase 3: swap content & fade new UI in
@@ -156,7 +163,6 @@ function SequencedTransition() {
         setContentOpacity(1);
       }, BG_FADE_MS);
 
-      // store on window to clear if needed
       (t1 as unknown as { _next?: ReturnType<typeof setTimeout> })._next = t2;
     }, FADE_OUT_MS);
 
@@ -165,29 +171,26 @@ function SequencedTransition() {
       if (next) clearTimeout(next);
       clearTimeout(t1);
     };
-  }, [pathname, displayedPath]);
-
-  const isSunset = bgPath.startsWith("/dashboard");
-  // Render base layer as the OUTGOING image (always fully opaque) and the
-  // INCOMING image on top fading 0 -> 1. This avoids the midpoint dip you get
-  // when two layers cross-fade their alpha against a dark backdrop.
-  const baseImage = isSunset ? heroBg : sunsetBg;
-  const topImage = isSunset ? sunsetBg : heroBg;
+  }, [pathname, displayedPath, currentBg]);
 
   return (
     <>
       <div className="pointer-events-none fixed inset-0 -z-50" aria-hidden>
+        {/* Outgoing image stays fully opaque underneath so the midpoint never dips */}
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${baseImage})` }}
+          style={{ backgroundImage: `url(${bgImage(prevBg)})` }}
         />
+        {/* Incoming image fades in on top */}
         <div
-          key={`top-${isSunset ? "sunset" : "day"}`}
+          key={`bg-${currentBg}`}
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${topImage})`,
-            opacity: isSunset ? 1 : 1,
-            animation: `fade-in-bg ${BG_FADE_MS}ms cubic-bezier(0.4, 0, 0.2, 1) both`,
+            backgroundImage: `url(${bgImage(currentBg)})`,
+            animation:
+              currentBg === prevBg
+                ? undefined
+                : `bg-fade-in ${BG_FADE_MS}ms cubic-bezier(0.45, 0, 0.25, 1) both`,
           }}
         />
       </div>
