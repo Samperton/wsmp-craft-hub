@@ -627,7 +627,6 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<string>(tab ?? "join");
   const [trailerOpen, setTrailerOpen] = useState(defaultTrailerOpen);
-  const [fadingOut, setFadingOut] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.search.includes("tab=")) {
@@ -656,14 +655,11 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   };
 
   const handleOpenDashboard = () => {
-    setFadingOut(true);
-    window.setTimeout(() => {
-      navigate({ to: "/dashboard" });
-    }, 900);
+    navigate({ to: "/dashboard" });
   };
 
   return (
-    <main className={`min-h-screen transition-opacity duration-[900ms] ease-in-out ${fadingOut ? "opacity-0" : "opacity-100"}`}>
+    <main className="min-h-screen">
       <Hero
         onNav={handleNav}
         trailerOpen={trailerOpen}
