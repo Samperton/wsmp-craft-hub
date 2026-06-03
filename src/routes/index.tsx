@@ -141,17 +141,17 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenDashboard }: { on
     { label: "CONNECT", desc: "Linked Discord", target: "discord" },
   ];
   return (
-    <section className="relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background/70 via-background/55 to-background" aria-hidden />
+    <section className="relative isolate overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-background/55 to-background" aria-hidden />
 
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pt-6">
+      <header className="relative mx-auto flex max-w-6xl items-center justify-between px-6 pt-6">
         <Logo />
         <div className="hidden md:block">
           <PlayerCounter />
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-6 pt-20 pb-28 md:pt-28 md:pb-36 text-center">
+      <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-28 md:pt-28 md:pb-36 text-center">
         <h1 className="font-minecraft text-5xl md:text-7xl leading-[1.15] text-shadow-minecraft">
           <span className="text-primary">W</span><span className="text-white text-shadow-minecraft">SMP</span>
         </h1>
@@ -657,11 +657,11 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
     setFadingOut(true);
     window.setTimeout(() => {
       navigate({ to: "/dashboard" });
-    }, 450);
+    }, 900);
   };
 
   return (
-    <main className={`min-h-screen transition-opacity duration-500 ease-in-out ${fadingOut ? "opacity-0" : "opacity-100"}`}>
+    <main className={`min-h-screen transition-opacity duration-[900ms] ease-in-out ${fadingOut ? "opacity-0" : "opacity-100"}`}>
       <Hero
         onNav={handleNav}
         trailerOpen={trailerOpen}
