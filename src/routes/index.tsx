@@ -512,12 +512,14 @@ function Footer() {
 }
 
 function SeasonCountdown() {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 1000);
+    const updateNow = () => setNow(Date.now());
+    updateNow();
+    const id = setInterval(updateNow, 1000);
     return () => clearInterval(id);
   }, []);
-  const diff = SEASON_START.getTime() - now;
+  const diff = now === null ? SEASON_START.getTime() : SEASON_START.getTime() - now;
   const live = diff <= 0;
   const d = Math.max(0, Math.floor(diff / 86400000));
   const h = Math.max(0, Math.floor((diff % 86400000) / 3600000));
@@ -539,7 +541,7 @@ function SeasonCountdown() {
                 className={`rounded-lg border-2 border-background/20 bg-background/10 backdrop-blur p-3 md:p-4 shadow-pixel ${i === 3 ? "animate-pulse" : ""}`}
               >
                 <div className="font-minecraft text-2xl md:text-4xl text-background text-shadow-minecraft tabular-nums">
-                  {value.toString().padStart(2, "0")}
+                  {now === null ? "--" : value.toString().padStart(2, "0")}
                 </div>
                 <div className="mt-1 text-[10px] md:text-xs uppercase tracking-widest text-background/70">{label}</div>
               </div>
