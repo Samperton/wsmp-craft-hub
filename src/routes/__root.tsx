@@ -8,6 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 
 import appCss from "../styles.css?url";
@@ -126,30 +127,85 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function GlobalBackground() {
+const FADE_OUT_MS = 500;
+const BG_FADE_MS = 900;
+const FADE_IN_MS = 700;
+
+function SequencedTransition() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isSunset = pathname.startsWith("/dashboard");
+  const [displayedPath, setDisplayedPath] = useState(pathname);
+  const [bgPath, setBgPath] = useState(pathname);
+  const [contentOpacity, setContentOpacity] = useState(1);
+  const [contentDuration, setContentDuration] = useState(FADE_IN_MS);
+
+  useEffect(() => {
+    if (pathname === displayedPath) return;
+
+    // Phase 1: fade old UI out
+    setContentDuration(FADE_OUT_MS);
+    setContentOpacity(0);
+
+    const t1 = setTimeout(() => {
+      // Phase 2: crossfade background
+      setBgPath(pathname);
+
+      const t2 = setTimeout(() => {
+        // Phase 3: swap content & fade new UI in
+        setDisplayedPath(pathname);
+        setContentDuration(FADE_IN_MS);
+        setContentOpacity(1);
+      }, BG_FADE_MS);
+
+      // store on window to clear if needed
+      (t1 as unknown as { _next?: ReturnType<typeof setTimeout> })._next = t2;
+    }, FADE_OUT_MS);
+
+    return () => {
+      const next = (t1 as unknown as { _next?: ReturnType<typeof setTimeout> })._next;
+      if (next) clearTimeout(next);
+      clearTimeout(t1);
+    };
+  }, [pathname, displayedPath]);
+
+  const isSunset = bgPath.startsWith("/dashboard");
+
   return (
-    <div className="pointer-events-none fixed inset-0 -z-50" aria-hidden>
+    <>
+      <div className="pointer-events-none fixed inset-0 -z-50" aria-hidden>
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-opacity ease-in-out"
+          style={{
+            backgroundImage: `url(${heroBg})`,
+            opacity: isSunset ? 0 : 1,
+            transitionDuration: `${BG_FADE_MS}ms`,
+          }}
+        />
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-opacity ease-in-out"
+          style={{
+            backgroundImage: `url(${sunsetBg})`,
+            opacity: isSunset ? 1 : 0,
+            transitionDuration: `${BG_FADE_MS}ms`,
+          }}
+        />
+      </div>
       <div
-        className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out"
-        style={{ backgroundImage: `url(${heroBg})`, opacity: isSunset ? 0 : 1 }}
-      />
-      <div
-        className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out"
-        style={{ backgroundImage: `url(${sunsetBg})`, opacity: isSunset ? 1 : 0 }}
-      />
-    </div>
+        style={{
+          opacity: contentOpacity,
+          transition: `opacity ${contentDuration}ms ease-in-out`,
+        }}
+      >
+        <RouteRenderer pathname={displayedPath} />
+      </div>
+    </>
   );
 }
 
-function PageFader() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  return (
-    <div key={pathname} style={{ animation: "fade-in 0.9s ease-out both" }}>
-      <Outlet />
-    </div>
-  );
+function RouteRenderer({ pathname }: { pathname: string }) {
+  // Outlet always renders the current matched route. To delay the visual swap,
+  // we wrap Outlet here; React still renders the live route, so this only
+  // guarantees the fade-in animation key resets when displayedPath updates.
+  return <div key={pathname}><Outlet /></div>;
 }
 
 function RootComponent() {
@@ -157,8 +213,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <GlobalBackground />
-      <PageFader />
+      <SequencedTransition />
     </QueryClientProvider>
   );
 }
