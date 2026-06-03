@@ -657,11 +657,11 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
     setFadingOut(true);
     window.setTimeout(() => {
       navigate({ to: "/dashboard" });
-    }, 450);
+    }, 900);
   };
 
   return (
-    <main className={`min-h-screen transition-opacity duration-500 ease-in-out ${fadingOut ? "opacity-0" : "opacity-100"}`}>
+    <main className={`min-h-screen transition-opacity duration-[900ms] ease-in-out ${fadingOut ? "opacity-0" : "opacity-100"}`}>
       <Hero
         onNav={handleNav}
         trailerOpen={trailerOpen}
