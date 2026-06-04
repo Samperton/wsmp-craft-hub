@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { lazy, Suspense, useState } from "react";
+import { useSequencedTransition } from "./__root";
 import { ArrowLeft, Trophy, Globe2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
