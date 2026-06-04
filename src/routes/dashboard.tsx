@@ -180,7 +180,7 @@ function DashboardPage() {
           <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
-        <div className="font-minecraft text-2xl md:text-3xl tracking-tight flex items-center text-shadow-minecraft">
+        <div className="font-pixel text-2xl md:text-3xl tracking-tight flex items-center text-shadow-minecraft">
           <span className="text-primary">W</span>
           <span className="text-white text-shadow-minecraft">SMP</span>
         </div>
@@ -189,7 +189,7 @@ function DashboardPage() {
 
       <div className="mx-auto max-w-4xl px-6 pt-16 pb-24">
         <div className="text-center">
-          <h1 className="font-minecraft text-4xl md:text-5xl text-shadow-minecraft text-white">
+          <h1 className="font-pixel text-4xl md:text-5xl text-shadow-minecraft text-white">
             Dashboard
           </h1>
           <p className="mt-3 text-slate-soft">Seasonal standings and the live world view.</p>

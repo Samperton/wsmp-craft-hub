@@ -54,7 +54,7 @@ export function ServerTrailer() {
 
 function Logo() {
   return (
-    <div className="font-minecraft text-2xl md:text-3xl tracking-tight flex items-center text-shadow-minecraft">
+    <div className="font-pixel text-2xl md:text-3xl tracking-tight flex items-center text-shadow-minecraft">
       <span className="text-primary">W</span>
       <span className="text-white text-shadow-minecraft">SMP</span>
     </div>
@@ -153,7 +153,7 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenDashboard }: { on
       </header>
 
       <div className="relative mx-auto max-w-6xl px-6 pt-20 pb-28 md:pt-28 md:pb-36 text-center">
-        <h1 className="font-minecraft text-5xl md:text-7xl leading-[1.15] text-shadow-minecraft">
+        <h1 className="font-pixel text-5xl md:text-7xl leading-[1.15] text-shadow-minecraft">
           <span className="text-primary">W</span><span className="text-white text-shadow-minecraft">SMP</span>
         </h1>
         <p className="mt-6 mx-auto max-w-2xl text-lg md:text-xl text-slate-soft">
