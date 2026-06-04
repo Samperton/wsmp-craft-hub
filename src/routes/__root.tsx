@@ -195,12 +195,12 @@ function SequencedTransition() {
     <TransitionContext.Provider value={{ start }}>
       <div className="pointer-events-none fixed inset-0 -z-50" aria-hidden>
         <div
-          className="absolute inset-0 bg-cover bg-bottom"
+          className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${bgImage(prevBg)})` }}
         />
         <div
           key={`bg-${bgAnimKey}`}
-          className="absolute inset-0 bg-cover bg-bottom"
+          className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${bgImage(currentBg)})`,
             animation: bgChanged
