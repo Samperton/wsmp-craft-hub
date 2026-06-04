@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import pluginsData from "@/data/plugins.json";
 import gameplayData from "@/data/gameplay-changes.json";
+import { useSequencedTransition } from "./__root";
 
 // TODO: update when finalized — currently Sept 4, 2025 7pm CST
 const SEASON_START = new Date("2026-09-04T19:00:00-05:00");
