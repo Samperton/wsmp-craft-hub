@@ -655,8 +655,9 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
     });
   };
 
+  const { start } = useSequencedTransition();
   const handleOpenDashboard = () => {
-    navigate({ to: "/dashboard" });
+    start(() => navigate({ to: "/dashboard" }));
   };
 
   return (
@@ -667,9 +668,11 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
         onTrailerOpenChange={handleTrailerOpenChange}
         onOpenDashboard={handleOpenDashboard}
       />
-      <SeasonCountdown />
-      <DiscordCard />
-      <InfoTabs value={activeTab} onValueChange={setActiveTab} />
+      <div className="bg-background">
+        <SeasonCountdown />
+        <DiscordCard />
+        <InfoTabs value={activeTab} onValueChange={setActiveTab} />
+      </div>
       <Footer />
       <Toaster />
     </main>
