@@ -165,15 +165,20 @@ function MapLoading() {
 
 function DashboardPage() {
   const [view, setView] = useState<View>("leaderboards");
+  const navigate = useNavigate();
+  const { start } = useSequencedTransition();
 
   return (
     <main className="min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pt-6">
-        <Button asChild variant="outline" size="sm" className="gap-2 bg-card/80 backdrop-blur">
-          <Link to="/">
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Link>
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-2 bg-card/80 backdrop-blur"
+          onClick={() => start(() => navigate({ to: "/" }))}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
         </Button>
         <div className="font-minecraft text-2xl md:text-3xl tracking-tight flex items-center text-shadow-minecraft">
           <span className="text-primary">W</span>
