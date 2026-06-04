@@ -8,7 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 
 import appCss from "../styles.css?url";
@@ -127,90 +127,98 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-const FADE_OUT_MS = 600;
-const BG_FADE_MS = 2200;
-const FADE_IN_MS = 800;
+const FADE_OUT_MS = 350;
+const BG_FADE_MS = 1100;
+const FADE_IN_MS = 500;
 
 type BgKind = "day" | "sunset";
 const bgFor = (path: string): BgKind => (path.startsWith("/dashboard") ? "sunset" : "day");
 const bgImage = (kind: BgKind) => (kind === "sunset" ? sunsetBg : heroBg);
 
+type TransitionCtx = { start: (action: () => void) => void };
+const TransitionContext = createContext<TransitionCtx>({ start: (a) => a() });
+export const useSequencedTransition = () => useContext(TransitionContext);
+
 function SequencedTransition() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const [displayedPath, setDisplayedPath] = useState(pathname);
   const [currentBg, setCurrentBg] = useState<BgKind>(bgFor(pathname));
   const [prevBg, setPrevBg] = useState<BgKind>(bgFor(pathname));
-  const [contentOpacity, setContentOpacity] = useState(1);
-  const [contentDuration, setContentDuration] = useState(FADE_IN_MS);
+  const [bgAnimKey, setBgAnimKey] = useState(0);
+  const [opacity, setOpacity] = useState(1);
+  const [opacityDur, setOpacityDur] = useState(0);
+
+  const lastPathRef = useRef(pathname);
+  const pendingRef = useRef(false);
+  const currentBgRef = useRef(currentBg);
+  currentBgRef.current = currentBg;
+
+  const start = useCallback((action: () => void) => {
+    pendingRef.current = true;
+    setOpacityDur(FADE_OUT_MS);
+    setOpacity(0);
+    window.setTimeout(action, FADE_OUT_MS);
+  }, []);
 
   useEffect(() => {
-    if (pathname === displayedPath) return;
+    if (pathname === lastPathRef.current) return;
+    lastPathRef.current = pathname;
 
-    // Phase 1: fade old UI out
-    setContentDuration(FADE_OUT_MS);
-    setContentOpacity(0);
+    const nextBg = bgFor(pathname);
 
-    const t1 = setTimeout(() => {
-      // Phase 2: crossfade background (only if it actually changes)
-      const nextBg = bgFor(pathname);
-      setPrevBg(currentBg);
+    const runBgAndFadeIn = () => {
+      // Phase 2: crossfade background
+      setPrevBg(currentBgRef.current);
       setCurrentBg(nextBg);
-
-      const t2 = setTimeout(() => {
-        // Phase 3: swap content & fade new UI in
-        setDisplayedPath(pathname);
-        setContentDuration(FADE_IN_MS);
-        setContentOpacity(1);
+      setBgAnimKey((k) => k + 1);
+      // Phase 3: fade new content in after the background has settled
+      window.setTimeout(() => {
+        setOpacityDur(FADE_IN_MS);
+        setOpacity(1);
       }, BG_FADE_MS);
-
-      (t1 as unknown as { _next?: ReturnType<typeof setTimeout> })._next = t2;
-    }, FADE_OUT_MS);
-
-    return () => {
-      const next = (t1 as unknown as { _next?: ReturnType<typeof setTimeout> })._next;
-      if (next) clearTimeout(next);
-      clearTimeout(t1);
     };
-  }, [pathname, displayedPath, currentBg]);
+
+    if (pendingRef.current) {
+      // Fade-out already ran via the trigger; jump straight to bg crossfade.
+      pendingRef.current = false;
+      runBgAndFadeIn();
+    } else {
+      // Untriggered nav (e.g. browser back): fade out first, then continue.
+      setOpacityDur(FADE_OUT_MS);
+      setOpacity(0);
+      window.setTimeout(runBgAndFadeIn, FADE_OUT_MS);
+    }
+  }, [pathname]);
+
+  const bgChanged = currentBg !== prevBg;
 
   return (
-    <>
+    <TransitionContext.Provider value={{ start }}>
       <div className="pointer-events-none fixed inset-0 -z-50" aria-hidden>
-        {/* Outgoing image stays fully opaque underneath so the midpoint never dips */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${bgImage(prevBg)})` }}
         />
-        {/* Incoming image fades in on top */}
         <div
-          key={`bg-${currentBg}`}
+          key={`bg-${bgAnimKey}`}
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${bgImage(currentBg)})`,
-            animation:
-              currentBg === prevBg
-                ? undefined
-                : `bg-fade-in ${BG_FADE_MS}ms cubic-bezier(0.45, 0, 0.25, 1) both`,
+            animation: bgChanged
+              ? `bg-fade-in ${BG_FADE_MS}ms linear both`
+              : undefined,
           }}
         />
       </div>
       <div
         style={{
-          opacity: contentOpacity,
-          transition: `opacity ${contentDuration}ms ease-in-out`,
+          opacity,
+          transition: `opacity ${opacityDur}ms ease-in-out`,
         }}
       >
-        <RouteRenderer pathname={displayedPath} />
+        <Outlet />
       </div>
-    </>
+    </TransitionContext.Provider>
   );
-}
-
-function RouteRenderer({ pathname }: { pathname: string }) {
-  // Outlet always renders the current matched route. To delay the visual swap,
-  // we wrap Outlet here; React still renders the live route, so this only
-  // guarantees the fade-in animation key resets when displayedPath updates.
-  return <div key={pathname}><Outlet /></div>;
 }
 
 function RootComponent() {
