@@ -34,12 +34,10 @@
   --color-slate-soft: var(--slate-soft);
   --color-online: var(--online);
   --font-pixel: 'Press Start 2P', monospace;
-  --font-minecraft: 'Press Start 2P', monospace;
+  --font-minecraft: 'Minecraft', 'Press Start 2P', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-sans: 'Inter', system-ui, sans-serif;
 }
-
-html { scrollbar-gutter: stable; }
 
 :root {
   --radius: 0.75rem;
