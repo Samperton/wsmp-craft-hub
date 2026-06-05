@@ -73,6 +73,7 @@
 }
 
 @layer base {
+  html { scrollbar-gutter: stable; }
   * { border-color: var(--color-border); }
   body {
     background-color: var(--color-background);
