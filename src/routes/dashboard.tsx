@@ -134,7 +134,7 @@ function LeaderboardsPanel() {
         </TabsList>
 
         <TabsContent value="active" className="mt-5">
-          <LeaderboardTable caption="Live standings will appear once Season 1 begins." />
+          <LiveLeaderboardTable />
         </TabsContent>
 
         <TabsContent value="s1" className="mt-5">
