@@ -3,7 +3,7 @@
   "name": "wsmp-craft-hub",
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "dist/index.js",
+  "main": "dist/server/server.js",
   "assets": {
       "directory": ".output/public"
   }
