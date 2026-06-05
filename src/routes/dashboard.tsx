@@ -34,7 +34,30 @@ export const Route = createFileRoute("/dashboard")({
       { property: "og:description", content: "Track the seasonal leaderboards and explore the live 3D world map." },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(leaderboardQueryOptions),
   component: DashboardPage,
+  pendingComponent: () => null,
+  errorComponent: ({ error, reset }) => {
+    const router = useRouter();
+    return (
+      <Card className="mx-auto mt-16 max-w-md p-6 text-center border-2 border-border shadow-soft bg-card/90 backdrop-blur">
+        <h2 className="font-pixel text-base text-slate-deep">Couldn't load leaderboard</h2>
+        <p className="mt-2 text-sm text-slate-soft">{error.message}</p>
+        <Button
+          className="mt-4"
+          onClick={() => {
+            reset();
+            void router.invalidate();
+          }}
+        >
+          Retry
+        </Button>
+      </Card>
+    );
+  },
+  notFoundComponent: () => (
+    <div className="p-10 text-center text-slate-soft">Dashboard not found.</div>
+  ),
 });
 
 type View = "leaderboards" | "map";
