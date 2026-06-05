@@ -190,7 +190,7 @@ function LiveLeaderboardTable() {
           <TableRow className="bg-secondary/60">
             <TableHead className="w-16 font-pixel text-xs">#</TableHead>
             <TableHead className="font-pixel text-xs">Player</TableHead>
-            <TableHead className="font-pixel text-xs text-right">Balance</TableHead>
+            <TableHead className="font-pixel text-xs">Balance</TableHead>
             <TableHead className="font-pixel text-xs">Playtime</TableHead>
           </TableRow>
         </TableHeader>
@@ -199,7 +199,9 @@ function LiveLeaderboardTable() {
             <TableRow key={`${p.name}-${i}`}>
               <TableCell className="font-mono text-primary font-bold">{i + 1}</TableCell>
               <TableCell className="text-slate-deep font-medium">{p.name}</TableCell>
-              <TableCell className="text-slate-soft font-mono text-right">{p.balanceDisplay}</TableCell>
+              <TableCell className="text-slate-soft font-mono">
+                {`$${p.balanceValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+              </TableCell>
               <TableCell className="text-slate-soft font-mono">{p.playtimeDisplay}</TableCell>
             </TableRow>
           ))}
