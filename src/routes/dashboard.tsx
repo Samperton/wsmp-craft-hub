@@ -1,5 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { lazy, Suspense, useState } from "react";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useSequencedTransition } from "./__root";
 import { ArrowLeft, Trophy, Globe2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,9 +14,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getLeaderboard } from "@/lib/leaderboard.functions";
 
 // Lazy-load the 3D World Map so it isn't initialized until the toggle is active.
 const WorldMapPanel = lazy(() => import("@/components/dashboard/WorldMapPanel"));
+
+const leaderboardQueryOptions = queryOptions({
+  queryKey: ["leaderboard"],
+  queryFn: () => getLeaderboard(),
+  staleTime: 60_000,
+});
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
