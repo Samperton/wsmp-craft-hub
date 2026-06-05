@@ -175,6 +175,43 @@ function LeaderboardTable({ caption }: { caption: string }) {
   );
 }
 
+function LiveLeaderboardTable() {
+  const { data } = useSuspenseQuery(leaderboardQueryOptions);
+  const players = data.players;
+  const caption =
+    players.length === 0
+      ? "No active players yet — check back once the season is live."
+      : "Live standings — refreshed from stats.w-smp.org.";
+
+  return (
+    <div className="rounded-xl border border-border overflow-hidden bg-card">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-secondary/60">
+            <TableHead className="w-16 font-pixel text-xs">#</TableHead>
+            <TableHead className="font-pixel text-xs">Player</TableHead>
+            <TableHead className="font-pixel text-xs text-right">Balance</TableHead>
+            <TableHead className="font-pixel text-xs">Playtime</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {players.map((p, i) => (
+            <TableRow key={`${p.name}-${i}`}>
+              <TableCell className="font-mono text-primary font-bold">{i + 1}</TableCell>
+              <TableCell className="text-slate-deep font-medium">{p.name}</TableCell>
+              <TableCell className="text-slate-soft font-mono text-right">{p.balanceDisplay}</TableCell>
+              <TableCell className="text-slate-soft font-mono">{p.playtimeDisplay}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <p className="px-4 py-3 text-xs text-muted-foreground border-t border-border bg-secondary/30">
+        {caption}
+      </p>
+    </div>
+  );
+}
+
 function MapLoading() {
   return (
     <Card className="p-10 border-2 border-border shadow-soft bg-card/90 backdrop-blur">
