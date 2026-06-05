@@ -1,5 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { lazy, Suspense, useState } from "react";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useSequencedTransition } from "./__root";
 import { ArrowLeft, Trophy, Globe2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,9 +14,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getLeaderboard } from "@/lib/leaderboard.functions";
 
 // Lazy-load the 3D World Map so it isn't initialized until the toggle is active.
 const WorldMapPanel = lazy(() => import("@/components/dashboard/WorldMapPanel"));
+
+const leaderboardQueryOptions = queryOptions({
+  queryKey: ["leaderboard"],
+  queryFn: () => getLeaderboard(),
+  staleTime: 60_000,
+});
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -26,7 +34,30 @@ export const Route = createFileRoute("/dashboard")({
       { property: "og:description", content: "Track the seasonal leaderboards and explore the live 3D world map." },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(leaderboardQueryOptions),
   component: DashboardPage,
+  pendingComponent: () => null,
+  errorComponent: ({ error, reset }) => {
+    const router = useRouter();
+    return (
+      <Card className="mx-auto mt-16 max-w-md p-6 text-center border-2 border-border shadow-soft bg-card/90 backdrop-blur">
+        <h2 className="font-pixel text-base text-slate-deep">Couldn't load leaderboard</h2>
+        <p className="mt-2 text-sm text-slate-soft">{error.message}</p>
+        <Button
+          className="mt-4"
+          onClick={() => {
+            reset();
+            void router.invalidate();
+          }}
+        >
+          Retry
+        </Button>
+      </Card>
+    );
+  },
+  notFoundComponent: () => (
+    <div className="p-10 text-center text-slate-soft">Dashboard not found.</div>
+  ),
 });
 
 type View = "leaderboards" | "map";
@@ -103,7 +134,7 @@ function LeaderboardsPanel() {
         </TabsList>
 
         <TabsContent value="active" className="mt-5">
-          <LeaderboardTable caption="Live standings will appear once Season 1 begins." />
+          <LiveLeaderboardTable />
         </TabsContent>
 
         <TabsContent value="s1" className="mt-5">
@@ -133,6 +164,43 @@ function LeaderboardTable({ caption }: { caption: string }) {
               <TableCell className="text-slate-soft">{r.player}</TableCell>
               <TableCell className="text-slate-soft font-mono">{r.balance}</TableCell>
               <TableCell className="text-slate-soft font-mono">{r.playtime}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <p className="px-4 py-3 text-xs text-muted-foreground border-t border-border bg-secondary/30">
+        {caption}
+      </p>
+    </div>
+  );
+}
+
+function LiveLeaderboardTable() {
+  const { data } = useSuspenseQuery(leaderboardQueryOptions);
+  const players = data.players;
+  const caption =
+    players.length === 0
+      ? "No active players yet — check back once the season is live."
+      : "Live standings — refreshed from stats.w-smp.org.";
+
+  return (
+    <div className="rounded-xl border border-border overflow-hidden bg-card">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-secondary/60">
+            <TableHead className="w-16 font-pixel text-xs">#</TableHead>
+            <TableHead className="font-pixel text-xs">Player</TableHead>
+            <TableHead className="font-pixel text-xs text-right">Balance</TableHead>
+            <TableHead className="font-pixel text-xs">Playtime</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {players.map((p, i) => (
+            <TableRow key={`${p.name}-${i}`}>
+              <TableCell className="font-mono text-primary font-bold">{i + 1}</TableCell>
+              <TableCell className="text-slate-deep font-medium">{p.name}</TableCell>
+              <TableCell className="text-slate-soft font-mono text-right">{p.balanceDisplay}</TableCell>
+              <TableCell className="text-slate-soft font-mono">{p.playtimeDisplay}</TableCell>
             </TableRow>
           ))}
         </TableBody>
