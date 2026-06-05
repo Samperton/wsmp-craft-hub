@@ -3,7 +3,7 @@
   "name": "wsmp-craft-hub",
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
-  "main": "@tanstack/react-start/server-entry",
+  "main": "./.output/server/index.mjs",
   "assets": {
       "directory": ".output/public"
   }
