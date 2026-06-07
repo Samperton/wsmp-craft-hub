@@ -129,7 +129,7 @@ function LeaderboardsPanel() {
             value="s1"
             className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary px-4 py-2"
           >
-            Season 1 Archive
+            Season 0 Archive
           </TabsTrigger>
         </TabsList>
 
@@ -138,7 +138,7 @@ function LeaderboardsPanel() {
         </TabsContent>
 
         <TabsContent value="s1" className="mt-5">
-          <LeaderboardTable caption="Season 1 archive — final standings will be locked at season close." />
+          <LeaderboardTable caption="Season 0 archive — final standings will be locked at season close." />
         </TabsContent>
       </Tabs>
     </Card>
