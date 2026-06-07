@@ -181,7 +181,7 @@ function LiveLeaderboardTable() {
   const caption =
     players.length === 0
       ? "No active players yet — check back once the season is live."
-      : "Live standings — refreshed from stats.w-smp.org.";
+      : "Live standings — these reflect the current in-game stats!";
 
   return (
     <div className="rounded-xl border border-border overflow-hidden bg-card">
