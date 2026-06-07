@@ -3,7 +3,7 @@ import { Globe2, Maximize2, Minimize2, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-const MAP_URL = "https://map.w-smp.org";
+const MAP_URL = "https://map.w-smp.org/#survival";
 
 export default function WorldMapPanel() {
   const wrapperRef = useRef<HTMLDivElement>(null);
