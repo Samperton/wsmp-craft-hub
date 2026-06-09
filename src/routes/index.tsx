@@ -2,7 +2,7 @@ import { createFileRoute, useSearch, useNavigate } from "@tanstack/react-router"
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { Copy, Check, Users, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle, LayoutDashboard } from "lucide-react";
+import { Copy, Check, Users, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle, LayoutDashboard, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -622,6 +622,54 @@ function DiscordCard() {
   );
 }
 
+function EventsCard({ onOpenEvents }: { onOpenEvents: () => void }) {
+  return (
+    <section id="events" className="mx-auto max-w-5xl px-6 pt-12 scroll-mt-20">
+      <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-gradient-to-br from-card to-secondary">
+        <div className="grid gap-6 md:grid-cols-2 md:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-slate-soft">
+              <Calendar className="h-3.5 w-3.5 text-primary" />
+              Community
+            </div>
+            <h2 className="mt-4 font-pixel text-xl md:text-2xl text-slate-deep">Server Events</h2>
+            <p className="mt-3 text-sm text-slate-soft">
+              Duels, build competitions, and community gatherings — see what's happening on WSMP.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button
+                onClick={onOpenEvents}
+                className="bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep"
+              >
+                <Calendar className="h-4 w-4" /> Browse Events
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-5">
+            <h3 className="font-pixel text-sm text-slate-deep">What to expect</h3>
+            <ul className="mt-4 space-y-3">
+              {[
+                { t: "About", d: "Learn how WSMP events work." },
+                { t: "Duels", d: "PvP matchups and tournaments." },
+                { t: "Builds", d: "Themed build competitions." },
+              ].map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="font-pixel text-primary text-xs w-6 shrink-0">0{i + 1}</span>
+                  <div className="text-sm">
+                    <div className="font-semibold text-foreground">{step.t}</div>
+                    <div className="text-slate-soft">{step.d}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Card>
+    </section>
+  );
+}
+
 export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?: boolean } = {}) {
   const search = useSearch({ strict: false }) as { tab?: typeof TAB_VALUES[number] };
   const tab = search.tab;
@@ -659,6 +707,9 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   const handleOpenStats = () => {
     start(() => navigate({ to: "/stats" }));
   };
+  const handleOpenEvents = () => {
+    start(() => navigate({ to: "/events" }));
+  };
 
   return (
     <main className="min-h-screen">
@@ -671,6 +722,7 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
       <div className="bg-background">
         <SeasonCountdown />
         <DiscordCard />
+        <EventsCard onOpenEvents={handleOpenEvents} />
         <InfoTabs value={activeTab} onValueChange={setActiveTab} />
       </div>
       <Footer />

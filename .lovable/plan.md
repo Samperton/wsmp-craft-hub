@@ -1,23 +1,24 @@
 ## Goal
-Replace the placeholder in the "3D World Map" view on `/dashboard` with the live map hosted at `https://map.w-smp.org`, and give users a way to view it fullscreen.
+Add an "Events" card to the homepage between `DiscordCard` and the "Get Started" (`InfoTabs`) section, styled to match the Discord card. The card has a button that links to a new `/events` route with three tabs: About, Duels, Builds (barebones).
 
-## Implementation
+## Changes
 
-### `src/components/dashboard/WorldMapPanel.tsx` (rewrite)
-- Drop the placeholder block.
-- Render an `<iframe src="https://map.w-smp.org">` inside a responsive container:
-  - Default: aspect-video (16:9), rounded, bordered, matches the existing card styling.
-  - `title="WSMP Live World Map"`, `loading="lazy"`, `allow="fullscreen"`, `allowFullScreen`.
-- Header row keeps the `Globe2` icon + "3D World Map" heading and adds two buttons on the right:
-  - **Open in new tab** — anchor to `https://map.w-smp.org` with `target="_blank" rel="noopener noreferrer"` (fallback if the browser blocks iframe fullscreen).
-  - **Fullscreen** — toggles browser Fullscreen API on a wrapper `div` around the iframe via a ref (`requestFullscreen` / `document.exitFullscreen`). Button label/icon swaps between `Maximize2` / `Minimize2` based on a `fullscreenchange` listener.
-- When fullscreen is active, the wrapper gets `bg-background` and the iframe fills `100%` width/height so it looks right outside the card.
-- Caption below: short note that the map is live from `map.w-smp.org`.
+### 1. `src/routes/index.tsx`
+- Add an `EventsCard` component just below `DiscordCard`, with the same outer layout (`section` + `Card` with `border-2`, `shadow-soft`, gradient bg, max-w-5xl, px-6 pt-12).
+- Content: a "Community" / "Events" pill, heading "Server Events", short blurb, and a primary `Button asChild` linking via TanStack `<Link to="/events">` ("Browse Events" with `Calendar` icon + `ArrowRight`).
+- Use the existing sequenced transition (like `handleOpenStats`) so navigation feels consistent — wrap the button in a click handler that calls `start(() => navigate({ to: "/events" }))`.
+- Render `<EventsCard />` between `<DiscordCard />` and `<InfoTabs ... />` in `IndexPage`.
+- Import `Calendar` from `lucide-react`.
 
-### No other files change
-- `src/routes/dashboard.tsx` already lazy-loads `WorldMapPanel`; no route changes.
-- No new dependencies (lucide icons `Maximize2` / `Minimize2` / `ExternalLink` are already available from `lucide-react`).
+### 2. `src/routes/events.tsx` (new file)
+- `createFileRoute("/events")` with `head()` meta (title "Events — WSMP", description, og tags).
+- Component renders a page consistent with other subpages (background, back link to `/`, heading).
+- A `Tabs` component (shadcn) with three triggers: About, Duels, Builds. Each `TabsContent` shows a minimal `Card` with the tab name and a "Coming soon" placeholder line.
+- Default tab: `about`.
+
+### 3. `src/routes/__root.tsx`
+- Add `/events` to the `bgFor` mapping if it currently switches background per route (mirroring how `/stats` is handled). If the file uses a default fallback that already works, no change needed — will verify on implementation.
 
 ## Out of scope
-- No auth, no data fetching, no styling overhaul of the dashboard.
-- No changes to leaderboards or other routes.
+- No real event data, no backend, no per-event detail pages.
+- No nav-header link (only the homepage card entry point, as requested).
