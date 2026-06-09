@@ -707,6 +707,9 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   const handleOpenStats = () => {
     start(() => navigate({ to: "/stats" }));
   };
+  const handleOpenEvents = () => {
+    start(() => navigate({ to: "/events" }));
+  };
 
   return (
     <main className="min-h-screen">
