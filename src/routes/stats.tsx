@@ -260,7 +260,7 @@ function StatsPage() {
       <div className="mx-auto max-w-4xl px-6 pt-16 pb-24">
         <div className="text-center">
           <h1 className="font-minecraft text-4xl md:text-5xl text-shadow-minecraft text-white">
-            Dashboard
+            Live Stats
           </h1>
           <p className="mt-3 text-slate-soft">Seasonal standings and the live world view.</p>
         </div>
