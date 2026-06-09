@@ -132,7 +132,7 @@ const BG_FADE_MS = 1100;
 const FADE_IN_MS = 500;
 
 type BgKind = "day" | "sunset";
-const bgFor = (path: string): BgKind => (path.startsWith("/dashboard") ? "sunset" : "day");
+const bgFor = (path: string): BgKind => (path.startsWith("/stats") ? "sunset" : "day");
 const bgImage = (kind: BgKind) => (kind === "sunset" ? sunsetBg : heroBg);
 
 type TransitionCtx = { start: (action: () => void) => void };
