@@ -205,12 +205,12 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenDashboard }: { on
 
         <div className="mt-8 flex justify-center">
           <Button
-            onClick={onOpenDashboard}
+            onClick={onOpenStats}
             size="lg"
             className="gap-2 bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep"
           >
             <LayoutDashboard className="h-4 w-4" />
-            Open Dashboard
+            Open Live Stats
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
