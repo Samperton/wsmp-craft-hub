@@ -70,7 +70,7 @@ function SegmentedToggle({ value, onChange }: { value: View; onChange: (v: View)
   return (
     <div
       role="tablist"
-      aria-label="Dashboard view"
+      aria-label="Live stats view"
       className="inline-flex items-center gap-1 rounded-full border-2 border-border bg-card/90 backdrop-blur p-1 shadow-soft"
     >
       {opts.map((o) => {
