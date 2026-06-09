@@ -56,7 +56,7 @@ export const Route = createFileRoute("/stats")({
     );
   },
   notFoundComponent: () => (
-    <div className="p-10 text-center text-slate-soft">Dashboard not found.</div>
+    <div className="p-10 text-center text-slate-soft">Live Stats not found.</div>
   ),
 });
 
