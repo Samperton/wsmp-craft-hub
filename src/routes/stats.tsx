@@ -25,7 +25,7 @@ const leaderboardQueryOptions = queryOptions({
   staleTime: 60_000,
 });
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/stats")({
   head: () => ({
     meta: [
       { title: "Dashboard — WSMP" },
