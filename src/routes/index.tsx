@@ -135,7 +135,7 @@ function CopyIpButton() {
   );
 }
 
-function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenDashboard }: { onNav: (target: "join" | "gameplay" | "discord") => void; trailerOpen: boolean; onTrailerOpenChange: (open: boolean) => void; onOpenDashboard: () => void }) {
+function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenStats }: { onNav: (target: "join" | "gameplay" | "discord") => void; trailerOpen: boolean; onTrailerOpenChange: (open: boolean) => void; onOpenStats: () => void }) {
   const cards: { label: string; desc: string; target: "join" | "gameplay" | "discord" }[] = [
     { label: "PLAY", desc: "Economy Survival", target: "join" },
     { label: "BUILD", desc: "Easy Land Claims", target: "gameplay" },
@@ -205,12 +205,12 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenDashboard }: { on
 
         <div className="mt-8 flex justify-center">
           <Button
-            onClick={onOpenDashboard}
+            onClick={onOpenStats}
             size="lg"
             className="gap-2 bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep"
           >
             <LayoutDashboard className="h-4 w-4" />
-            Open Dashboard
+            Open Live Stats
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
@@ -656,8 +656,8 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   };
 
   const { start } = useSequencedTransition();
-  const handleOpenDashboard = () => {
-    start(() => navigate({ to: "/dashboard" }));
+  const handleOpenStats = () => {
+    start(() => navigate({ to: "/stats" }));
   };
 
   return (
@@ -666,7 +666,7 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
         onNav={handleNav}
         trailerOpen={trailerOpen}
         onTrailerOpenChange={handleTrailerOpenChange}
-        onOpenDashboard={handleOpenDashboard}
+        onOpenStats={handleOpenStats}
       />
       <div className="bg-background">
         <SeasonCountdown />

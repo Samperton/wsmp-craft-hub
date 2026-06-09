@@ -25,17 +25,17 @@ const leaderboardQueryOptions = queryOptions({
   staleTime: 60_000,
 });
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/stats")({
   head: () => ({
     meta: [
-      { title: "Dashboard — WSMP" },
+      { title: "Live Stats — WSMP" },
       { name: "description", content: "Seasonal leaderboards and the live 3D world map for WSMP." },
-      { property: "og:title", content: "WSMP Dashboard" },
+      { property: "og:title", content: "WSMP Live Stats" },
       { property: "og:description", content: "Track the seasonal leaderboards and explore the live 3D world map." },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(leaderboardQueryOptions),
-  component: DashboardPage,
+  component: StatsPage,
   pendingComponent: () => null,
   errorComponent: ({ error, reset }) => {
     const router = useRouter();
@@ -56,7 +56,7 @@ export const Route = createFileRoute("/dashboard")({
     );
   },
   notFoundComponent: () => (
-    <div className="p-10 text-center text-slate-soft">Dashboard not found.</div>
+    <div className="p-10 text-center text-slate-soft">Live Stats not found.</div>
   ),
 });
 
@@ -70,7 +70,7 @@ function SegmentedToggle({ value, onChange }: { value: View; onChange: (v: View)
   return (
     <div
       role="tablist"
-      aria-label="Dashboard view"
+      aria-label="Live stats view"
       className="inline-flex items-center gap-1 rounded-full border-2 border-border bg-card/90 backdrop-blur p-1 shadow-soft"
     >
       {opts.map((o) => {
@@ -233,7 +233,7 @@ function MapLoading() {
   );
 }
 
-function DashboardPage() {
+function StatsPage() {
   const [view, setView] = useState<View>("leaderboards");
   const navigate = useNavigate();
   const { start } = useSequencedTransition();
@@ -260,7 +260,7 @@ function DashboardPage() {
       <div className="mx-auto max-w-4xl px-6 pt-16 pb-24">
         <div className="text-center">
           <h1 className="font-minecraft text-4xl md:text-5xl text-shadow-minecraft text-white">
-            Dashboard
+            Live Stats
           </h1>
           <p className="mt-3 text-slate-soft">Seasonal standings and the live world view.</p>
         </div>
