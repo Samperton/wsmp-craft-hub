@@ -722,6 +722,7 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
       <div className="bg-background">
         <SeasonCountdown />
         <DiscordCard />
+        <EventsCard onOpenEvents={handleOpenEvents} />
         <InfoTabs value={activeTab} onValueChange={setActiveTab} />
       </div>
       <Footer />
