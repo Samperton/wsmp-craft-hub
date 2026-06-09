@@ -28,14 +28,14 @@ const leaderboardQueryOptions = queryOptions({
 export const Route = createFileRoute("/stats")({
   head: () => ({
     meta: [
-      { title: "Dashboard — WSMP" },
+      { title: "Live Stats — WSMP" },
       { name: "description", content: "Seasonal leaderboards and the live 3D world map for WSMP." },
-      { property: "og:title", content: "WSMP Dashboard" },
+      { property: "og:title", content: "WSMP Live Stats" },
       { property: "og:description", content: "Track the seasonal leaderboards and explore the live 3D world map." },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(leaderboardQueryOptions),
-  component: DashboardPage,
+  component: StatsPage,
   pendingComponent: () => null,
   errorComponent: ({ error, reset }) => {
     const router = useRouter();
