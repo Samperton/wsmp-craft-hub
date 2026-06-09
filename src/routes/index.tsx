@@ -135,7 +135,7 @@ function CopyIpButton() {
   );
 }
 
-function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenDashboard }: { onNav: (target: "join" | "gameplay" | "discord") => void; trailerOpen: boolean; onTrailerOpenChange: (open: boolean) => void; onOpenDashboard: () => void }) {
+function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenStats }: { onNav: (target: "join" | "gameplay" | "discord") => void; trailerOpen: boolean; onTrailerOpenChange: (open: boolean) => void; onOpenStats: () => void }) {
   const cards: { label: string; desc: string; target: "join" | "gameplay" | "discord" }[] = [
     { label: "PLAY", desc: "Economy Survival", target: "join" },
     { label: "BUILD", desc: "Easy Land Claims", target: "gameplay" },
