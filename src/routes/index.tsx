@@ -656,8 +656,8 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   };
 
   const { start } = useSequencedTransition();
-  const handleOpenDashboard = () => {
-    start(() => navigate({ to: "/dashboard" }));
+  const handleOpenStats = () => {
+    start(() => navigate({ to: "/stats" }));
   };
 
   return (
@@ -666,7 +666,7 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
         onNav={handleNav}
         trailerOpen={trailerOpen}
         onTrailerOpenChange={handleTrailerOpenChange}
-        onOpenDashboard={handleOpenDashboard}
+        onOpenStats={handleOpenStats}
       />
       <div className="bg-background">
         <SeasonCountdown />
