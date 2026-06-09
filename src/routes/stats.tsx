@@ -233,7 +233,7 @@ function MapLoading() {
   );
 }
 
-function DashboardPage() {
+function StatsPage() {
   const [view, setView] = useState<View>("leaderboards");
   const navigate = useNavigate();
   const { start } = useSequencedTransition();
