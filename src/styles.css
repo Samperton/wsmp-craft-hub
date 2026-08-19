@@ -3,13 +3,34 @@
 
 @source "../src";
 
-/* Self-hosted so every device renders the identical face (no local() override). */
+/* Classic Minecraft typeface, self-hosted so every device renders the same face. */
 @font-face {
   font-family: 'Minecraft';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('./assets/fonts/minecraft-ten.woff') format('woff');
+  src: url('./assets/fonts/minecraft-regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'Minecraft';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/minecraft-italic.woff') format('woff');
+}
+@font-face {
+  font-family: 'Minecraft';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/minecraft-bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Minecraft';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/minecraft-bold-italic.woff') format('woff');
 }
 
 @custom-variant dark (&:is(.dark *));
