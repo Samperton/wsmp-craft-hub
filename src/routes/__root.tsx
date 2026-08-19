@@ -99,10 +99,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.cdnfonts.com/css/minecraft-4",
-      },
-      {
-        rel: "stylesheet",
         href: appCss,
       },
     ],
