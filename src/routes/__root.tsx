@@ -129,7 +129,7 @@ const FADE_IN_MS = 500;
 
 type BgKind = "day" | "sunset";
 const bgFor = (path: string): BgKind =>
-  path.startsWith("/stats") || path.startsWith("/events") ? "sunset" : "day";
+  path.startsWith("/stats") || path.startsWith("/events") || path.startsWith("/modpack") ? "sunset" : "day";
 const bgImage = (kind: BgKind) => (kind === "sunset" ? sunsetBg : heroBg);
 
 type TransitionCtx = { start: (action: () => void) => void };
