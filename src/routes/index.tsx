@@ -759,6 +759,9 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   const handleOpenEvents = () => {
     start(() => navigate({ to: "/events" }));
   };
+  const handleOpenModpack = () => {
+    start(() => navigate({ to: "/modpack" }));
+  };
 
   return (
     <main className="min-h-screen">
@@ -773,6 +776,7 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
         <DiscordCard />
         <EventsCard onOpenEvents={handleOpenEvents} />
         <InfoTabs value={activeTab} onValueChange={setActiveTab} />
+        <ModpackCard onOpenModpack={handleOpenModpack} />
       </div>
       <Footer />
       <Toaster />
