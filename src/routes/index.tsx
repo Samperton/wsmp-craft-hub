@@ -670,6 +670,55 @@ function EventsCard({ onOpenEvents }: { onOpenEvents: () => void }) {
   );
 }
 
+function ModpackCard({ onOpenModpack }: { onOpenModpack: () => void }) {
+  return (
+    <section id="modpack" className="mx-auto max-w-5xl px-6 pt-12 pb-12 scroll-mt-20">
+      <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-gradient-to-br from-card to-secondary">
+        <div className="grid gap-6 md:grid-cols-2 md:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-slate-soft">
+              <Package className="h-3.5 w-3.5 text-primary" />
+              Mods & Voice Chat
+            </div>
+            <h2 className="mt-4 font-pixel text-xl md:text-2xl text-slate-deep">Optional Client Modpack</h2>
+            <p className="mt-3 text-sm text-slate-soft">
+              Add proximity voice chat and lightweight client-side tweaks with the optional WSMP modpack.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button
+                onClick={onOpenModpack}
+                className="bg-gradient-primary hover:opacity-90 shadow-pixel-primary border-2 border-slate-deep"
+              >
+                <Package className="h-4 w-4" /> View Modpack Guide
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">Requires Minecraft 26.2 Java Edition & Fabric Loader.</p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-5">
+            <h3 className="font-pixel text-sm text-slate-deep">What's included</h3>
+            <ul className="mt-4 space-y-3">
+              {[
+                { t: "Simple Voice Chat", d: "Talk with nearby players in-game." },
+                { t: "Fabric Loader", d: "Lightweight modding framework." },
+                { t: "QoL Mods", d: "Small client-side enhancements." },
+              ].map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="font-pixel text-primary text-xs w-6 shrink-0">0{i + 1}</span>
+                  <div className="text-sm">
+                    <div className="font-semibold text-foreground">{step.t}</div>
+                    <div className="text-slate-soft">{step.d}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Card>
+    </section>
+  );
+}
+
 export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?: boolean } = {}) {
   const search = useSearch({ strict: false }) as { tab?: typeof TAB_VALUES[number] };
   const tab = search.tab;
