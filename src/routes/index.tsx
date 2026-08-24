@@ -772,6 +772,9 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   const handleOpenModpack = () => {
     start(() => navigate({ to: "/modpack" }));
   };
+  const handleOpenMap = () => {
+    start(() => navigate({ to: "/map" }));
+  };
 
   return (
     <main className="min-h-screen">
@@ -780,6 +783,7 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
         trailerOpen={trailerOpen}
         onTrailerOpenChange={handleTrailerOpenChange}
         onOpenStats={handleOpenStats}
+        onOpenMap={handleOpenMap}
       />
       <div className="bg-background">
         <SeasonCountdown />
