@@ -18,7 +18,7 @@ export const Route = createFileRoute("/modpack")({
   component: ModpackPage,
 });
 
-const MODPACK_DOWNLOAD_URL = "/downloads/wsmp-modpack.zip";
+const MODPACK_DOWNLOAD_URL = "https://github.com/Samperton/wsmp-craft-hub/releases/download/v1.0.0/wsmp-modpack.zip";
 
 const steps = [
   {
