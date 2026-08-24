@@ -144,8 +144,7 @@ export default function ModpackPage() {
           <section>
             <h2 className="font-pixel text-lg md:text-xl text-slate-deep">Optional Client Modpack</h2>
             <p className="mt-3 text-sm text-slate-soft">
-              The WSMP modpack is completely optional. It adds proximity voice chat and a few lightweight client-side
-              tweaks so you can hang out with other players more easily.
+              The WSMP modpack is completely optional. It adds proximity voice chat, significantly increased render distance, and a few lightweight client-side enhancements and tweaks!
             </p>
           </section>
 
