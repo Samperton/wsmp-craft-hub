@@ -245,8 +245,8 @@ function MapLoading() {
   );
 }
 
-function StatsPage() {
-  const [view, setView] = useState<View>("leaderboards");
+function StatsPageInner({ defaultView = "leaderboards" }: { defaultView?: View }) {
+  const [view, setView] = useState<View>(defaultView);
   const navigate = useNavigate();
   const { start } = useSequencedTransition();
 
@@ -299,3 +299,8 @@ function StatsPage() {
     </main>
   );
 }
+
+export function StatsPage({ defaultView }: { defaultView?: View } = {}) {
+  return <StatsPageInner defaultView={defaultView} />;
+}
+
