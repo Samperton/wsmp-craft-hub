@@ -203,7 +203,7 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenStats, onOpenMap 
           ))}
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button
             onClick={onOpenStats}
             size="lg"
@@ -211,6 +211,16 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenStats, onOpenMap 
           >
             <LayoutDashboard className="h-4 w-4" />
             Open Live Stats
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+          <Button
+            onClick={onOpenMap}
+            variant="outline"
+            size="lg"
+            className="gap-2 bg-card/80 backdrop-blur border-2 border-slate-deep"
+          >
+            <Globe2 className="h-4 w-4 text-primary" />
+            Explore World Map
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
