@@ -2,7 +2,7 @@ import { createFileRoute, useSearch, useNavigate } from "@tanstack/react-router"
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { Copy, Check, Users, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle, LayoutDashboard, Calendar, Package } from "lucide-react";
+import { Copy, Check, Users, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle, LayoutDashboard, Calendar, Package, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -135,7 +135,7 @@ function CopyIpButton() {
   );
 }
 
-function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenStats }: { onNav: (target: "join" | "gameplay" | "discord") => void; trailerOpen: boolean; onTrailerOpenChange: (open: boolean) => void; onOpenStats: () => void }) {
+function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenStats, onOpenMap }: { onNav: (target: "join" | "gameplay" | "discord") => void; trailerOpen: boolean; onTrailerOpenChange: (open: boolean) => void; onOpenStats: () => void; onOpenMap: () => void }) {
   const cards: { label: string; desc: string; target: "join" | "gameplay" | "discord" }[] = [
     { label: "PLAY", desc: "Economy Survival", target: "join" },
     { label: "BUILD", desc: "Easy Land Claims", target: "gameplay" },
@@ -203,7 +203,7 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenStats }: { onNav:
           ))}
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Button
             onClick={onOpenStats}
             size="lg"
@@ -211,6 +211,16 @@ function Hero({ onNav, trailerOpen, onTrailerOpenChange, onOpenStats }: { onNav:
           >
             <LayoutDashboard className="h-4 w-4" />
             Open Live Stats
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+          <Button
+            onClick={onOpenMap}
+            variant="outline"
+            size="lg"
+            className="gap-2 bg-card/80 backdrop-blur border-2 border-slate-deep"
+          >
+            <Globe2 className="h-4 w-4 text-primary" />
+            Explore World Map
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
@@ -762,6 +772,9 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   const handleOpenModpack = () => {
     start(() => navigate({ to: "/modpack" }));
   };
+  const handleOpenMap = () => {
+    start(() => navigate({ to: "/map" }));
+  };
 
   return (
     <main className="min-h-screen">
@@ -770,6 +783,7 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
         trailerOpen={trailerOpen}
         onTrailerOpenChange={handleTrailerOpenChange}
         onOpenStats={handleOpenStats}
+        onOpenMap={handleOpenMap}
       />
       <div className="bg-background">
         <SeasonCountdown />
