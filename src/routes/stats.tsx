@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
+
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useSequencedTransition } from "./__root";
 import { ArrowLeft, Trophy, Globe2, Loader2 } from "lucide-react";
@@ -175,8 +176,18 @@ function LeaderboardTable({ caption }: { caption: string }) {
   );
 }
 
+function useMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  return mounted;
+}
+
 function LiveLeaderboardTable() {
   const { data } = useSuspenseQuery(leaderboardQueryOptions);
+  const mounted = useMounted();
+  if (!mounted) {
+    return <LeaderboardTable caption="Loading live standings…" />;
+  }
   const players = data.players;
   const caption =
     players.length === 0
@@ -213,6 +224,7 @@ function LiveLeaderboardTable() {
     </div>
   );
 }
+
 
 function MapLoading() {
   return (
