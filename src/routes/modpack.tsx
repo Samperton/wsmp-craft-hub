@@ -84,7 +84,7 @@ const steps = [
     title: "Launch & Play",
     description: (
       <>
-        Re-launch Fabric 26.2 in your launcher, jump into <code>mc.w-smp.org</code>, and press{" "}
+        Re-launch Fabric 26.2 in your launcher, jump into <code>w-smp.org</code>, and press{" "}
         <kbd className="rounded bg-secondary px-1.5 py-0.5 font-mono text-xs">Caps Lock</kbd> to configure your voice
         chat!
       </>
