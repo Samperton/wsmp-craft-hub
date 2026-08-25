@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Download, Package, PlayCircle } from "lucide-react";
+import { ArrowLeft, Download, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useSequencedTransition } from "./__root";
