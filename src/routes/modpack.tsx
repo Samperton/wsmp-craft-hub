@@ -154,10 +154,10 @@ export default function ModpackPage() {
           <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-card/90 backdrop-blur">
             <h3 className="font-pixel text-base text-slate-deep">Video tutorial</h3>
             <p className="mt-2 text-sm text-slate-soft">
-              A quick walkthrough of the install process will be embedded here.
+              A quick walkthrough of the install process.
             </p>
             <div className="mt-4">
-              <VideoPlaceholder />
+              <VideoEmbed />
             </div>
           </Card>
 
