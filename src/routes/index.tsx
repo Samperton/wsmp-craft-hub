@@ -710,8 +710,8 @@ function ModpackCard({ onOpenModpack }: { onOpenModpack: () => void }) {
             <ul className="mt-4 space-y-3">
               {[
                 { t: "Simple Voice Chat", d: "Talk with nearby players in-game." },
-                { t: "Fabric Loader", d: "Lightweight modding framework." },
-                { t: "QoL Mods", d: "Small client-side enhancements." },
+                { t: "Distant Horizons", d: "Substantially increased render distance." },
+                { t: "Performance Enhancements", d: "Sodium and other mods that increase FPS." },
               ].map((step, i) => (
                 <li key={i} className="flex gap-3">
                   <span className="font-pixel text-primary text-xs w-6 shrink-0">0{i + 1}</span>
@@ -766,9 +766,6 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
   const handleOpenStats = () => {
     start(() => navigate({ to: "/stats" }));
   };
-  const handleOpenEvents = () => {
-    start(() => navigate({ to: "/events" }));
-  };
   const handleOpenModpack = () => {
     start(() => navigate({ to: "/modpack" }));
   };
@@ -788,9 +785,8 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
       <div className="bg-background">
         <SeasonCountdown />
         <DiscordCard />
-        <EventsCard onOpenEvents={handleOpenEvents} />
-        <InfoTabs value={activeTab} onValueChange={setActiveTab} />
         <ModpackCard onOpenModpack={handleOpenModpack} />
+        <InfoTabs value={activeTab} onValueChange={setActiveTab} />
       </div>
       <Footer />
       <Toaster />
