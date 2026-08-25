@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, Download, Package, PlayCircle } from "lucide-react";
+import { ArrowLeft, Download, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useSequencedTransition } from "./__root";
@@ -92,16 +92,19 @@ const steps = [
   },
 ];
 
-function VideoPlaceholder() {
+const TUTORIAL_VIDEO_URL =
+  'https://cdnapisec.kaltura.com/p/812561/embedPlaykitJs/uiconf_id/52484262?iframeembed=true&entry_id=1_yoxtxe4p&config[provider]={"widgetId":"1_zjtqw5rw"}';
+
+function VideoEmbed() {
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border bg-slate-deep group cursor-pointer">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-slate-deep/90" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="rounded-full bg-background/90 p-4 shadow-soft transition-transform group-hover:scale-110">
-          <PlayCircle className="h-10 w-10 text-primary" />
-        </div>
-      </div>
-      <p className="absolute bottom-4 left-4 text-sm font-medium text-background/80">Video tutorial coming soon</p>
+    <div className="relative aspect-video w-full overflow-hidden rounded-xl border-2 border-border bg-slate-deep shadow-soft">
+      <iframe
+        src={TUTORIAL_VIDEO_URL}
+        title="WSMP Modpack Installation Tutorial"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className="absolute inset-0 h-full w-full"
+      />
     </div>
   );
 }
@@ -151,10 +154,10 @@ export default function ModpackPage() {
           <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-card/90 backdrop-blur">
             <h3 className="font-pixel text-base text-slate-deep">Video tutorial</h3>
             <p className="mt-2 text-sm text-slate-soft">
-              A quick walkthrough of the install process will be embedded here.
+              A quick walkthrough of the install process.
             </p>
             <div className="mt-4">
-              <VideoPlaceholder />
+              <VideoEmbed />
             </div>
           </Card>
 
