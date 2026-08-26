@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate, useRouter } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState } from "react";
 
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/stats")({
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(leaderboardQueryOptions),
-  component: StatsPage,
+  component: StatsLayout,
   pendingComponent: () => null,
   errorComponent: ({ error, reset }) => {
     const router = useRouter();
@@ -60,6 +60,10 @@ export const Route = createFileRoute("/stats")({
     <div className="p-10 text-center text-slate-soft">Live Stats not found.</div>
   ),
 });
+
+function StatsLayout() {
+  return <Outlet />;
+}
 
 type View = "leaderboards" | "map";
 
@@ -148,7 +152,8 @@ function parsePlaytimeToMinutes(display: string): number {
   return total;
 }
 
-function LeaderboardsPanel() {
+function LeaderboardsPanel({ defaultTab = "active" }: { defaultTab?: "active" | "s1" }) {
+  const [tab, setTab] = useState<"active" | "s1">(defaultTab);
   return (
     <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-card/90 backdrop-blur">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -160,7 +165,7 @@ function LeaderboardsPanel() {
         </div>
       </div>
 
-      <Tabs defaultValue="active" className="mt-6 w-full">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "active" | "s1")} className="mt-6 w-full">
         <TabsList className="bg-secondary p-1 rounded-xl">
           <TabsTrigger
             value="active"
@@ -349,7 +354,13 @@ function MapLoading() {
   );
 }
 
-function StatsPageInner({ defaultView = "leaderboards" }: { defaultView?: View }) {
+function StatsPageInner({
+  defaultView = "leaderboards",
+  defaultSeasonTab = "active",
+}: {
+  defaultView?: View;
+  defaultSeasonTab?: "active" | "s1";
+}) {
   const [view, setView] = useState<View>(defaultView);
   const navigate = useNavigate();
   const { start } = useSequencedTransition();
@@ -391,7 +402,7 @@ function StatsPageInner({ defaultView = "leaderboards" }: { defaultView?: View }
             className="animate-fade-in"
           >
             {view === "leaderboards" ? (
-              <LeaderboardsPanel />
+              <LeaderboardsPanel defaultTab={defaultSeasonTab} />
             ) : (
               <Suspense fallback={<MapLoading />}>
                 <WorldMapPanel />
@@ -404,7 +415,13 @@ function StatsPageInner({ defaultView = "leaderboards" }: { defaultView?: View }
   );
 }
 
-export function StatsPage({ defaultView }: { defaultView?: View } = {}) {
-  return <StatsPageInner defaultView={defaultView} />;
+export function StatsPage({
+  defaultView,
+  defaultSeasonTab,
+}: {
+  defaultView?: View;
+  defaultSeasonTab?: "active" | "s1";
+} = {}) {
+  return <StatsPageInner defaultView={defaultView} defaultSeasonTab={defaultSeasonTab} />;
 }
 
