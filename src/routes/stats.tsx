@@ -98,13 +98,55 @@ function SegmentedToggle({ value, onChange }: { value: View; onChange: (v: View)
   );
 }
 
-const PLACEHOLDER_ROWS = [
-  { rank: 1, player: "—", balance: "—", playtime: "—" },
-  { rank: 2, player: "—", balance: "—", playtime: "—" },
-  { rank: 3, player: "—", balance: "—", playtime: "—" },
-  { rank: 4, player: "—", balance: "—", playtime: "—" },
-  { rank: 5, player: "—", balance: "—", playtime: "—" },
+type SortKey = "balance" | "playtime";
+
+const SEASON_0_ROWS: { player: string; balance: number; playtime: string }[] = [
+  { player: "KattmannPlayzz", balance: 1111111111.11, playtime: "63h 11m" },
+  { player: "AydenFruitPlayzz", balance: 502305615.81, playtime: "63h 24m" },
+  { player: "_JT5923_", balance: 401107494.45, playtime: "185h 34m" },
+  { player: "MoonlitRaes", balance: 284147724.0, playtime: "195h 40m" },
+  { player: "Maddogz102", balance: 158017466.21, playtime: "28h 27m" },
+  { player: "IMM3RSIVE", balance: 98041604.37, playtime: "82h 57m" },
+  { player: "SampsonSnuggles", balance: 80426221.58, playtime: "86h 20m" },
+  { player: "Archdruid_Lupin", balance: 24969510.0, playtime: "53h 36m" },
+  { player: "DoctorineZombie", balance: 13668454.95, playtime: "24h 54m" },
+  { player: "DiplexC", balance: 1187798.89, playtime: "100h 37m" },
+  { player: "Allerianx", balance: 771387.25, playtime: "39h 30m" },
+  { player: "Blumblor", balance: 554908.26, playtime: "79h 41m" },
+  { player: "CrazyAckman", balance: 341931.09, playtime: "20h 29m" },
+  { player: "GreasyBurrito2", balance: 309712.5, playtime: "5h 37m" },
+  { player: "EKKOREE_lCRv6yx", balance: 306570.0, playtime: "14h 42m" },
+  { player: "deaady", balance: 224565.78, playtime: "37h 56m" },
+  { player: "tuggalives", balance: 95498.0, playtime: "4h 18m" },
+  { player: "vanexla", balance: 92431.46, playtime: "43h 12m" },
+  { player: "Spaghost", balance: 53774.95, playtime: "45h 8m" },
+  { player: "kbamyy", balance: 53436.7, playtime: "27h 11m" },
+  { player: "Fire_star_123", balance: 35616.5, playtime: "10h 28m" },
+  { player: "MTImJustbored", balance: 30186.0, playtime: "5h 40m" },
+  { player: "numces", balance: 30156.35, playtime: "39h 30m" },
+  { player: "MT_Sampson", balance: 19900.0, playtime: "2h 53m" },
+  { player: "MelloCh0mp", balance: 19834.5, playtime: "13h 46m" },
+  { player: "cxtcz", balance: 10800.0, playtime: "1h 52m" },
+  { player: "JH0529", balance: 10118.75, playtime: "56m 50s" },
+  { player: "NamelessBunBun", balance: 4104.0, playtime: "2h 50m" },
+  { player: "JewelMaven", balance: 1500.0, playtime: "14m 23s" },
+  { player: "8BitBambi", balance: 1500.0, playtime: "22m 49s" },
+  { player: "gupperss", balance: 1500.0, playtime: "3h 32m" },
+  { player: "Go1dfq1con", balance: 628.0, playtime: "39m 29s" },
+  { player: "9milesaway", balance: 540.0, playtime: "2h 22m" },
+  { player: "SharkJGM", balance: 501.0, playtime: "1h 48m" },
 ];
+
+function parsePlaytimeToMinutes(display: string): number {
+  let total = 0;
+  const hMatch = display.match(/(\d+)h/);
+  const mMatch = display.match(/(\d+)m/);
+  const sMatch = display.match(/(\d+)s/);
+  if (hMatch) total += Number(hMatch[1]) * 60;
+  if (mMatch) total += Number(mMatch[1]);
+  if (sMatch) total += Number(sMatch[1]) / 60;
+  return total;
+}
 
 function LeaderboardsPanel() {
   return (
@@ -130,7 +172,7 @@ function LeaderboardsPanel() {
             value="s1"
             className="data-[state=active]:bg-card data-[state=active]:shadow-soft data-[state=active]:text-primary px-4 py-2"
           >
-            Season 0 Archive
+            Season 0
           </TabsTrigger>
         </TabsList>
 
@@ -139,14 +181,60 @@ function LeaderboardsPanel() {
         </TabsContent>
 
         <TabsContent value="s1" className="mt-5">
-          <LeaderboardTable caption="Season 0 archive — final standings will be locked at season close." />
+          <Season0LeaderboardTable />
         </TabsContent>
       </Tabs>
     </Card>
   );
 }
 
-function LeaderboardTable({ caption }: { caption: string }) {
+function SortableHeader({
+  label,
+  active,
+  direction,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  direction: "desc" | "asc";
+  onClick: () => void;
+}) {
+  return (
+    <TableHead className="font-pixel text-xs cursor-pointer select-none" onClick={onClick}>
+      <span className="inline-flex items-center gap-1">
+        {label}
+        <span className="inline-flex flex-col leading-none text-[10px] text-muted-foreground">
+          <span className={active && direction === "desc" ? "text-primary" : ""}>▲</span>
+          <span className={active && direction === "asc" ? "text-primary" : ""}>▼</span>
+        </span>
+      </span>
+    </TableHead>
+  );
+}
+
+function Season0LeaderboardTable() {
+  const [sort, setSort] = useState<SortKey>("balance");
+  const [direction, setDirection] = useState<"desc" | "asc">("desc");
+
+  const rows = [...SEASON_0_ROWS].sort((a, b) => {
+    let comparison = 0;
+    if (sort === "balance") {
+      comparison = a.balance - b.balance;
+    } else {
+      comparison = parsePlaytimeToMinutes(a.playtime) - parsePlaytimeToMinutes(b.playtime);
+    }
+    return direction === "desc" ? -comparison : comparison;
+  });
+
+  function toggleSort(key: SortKey) {
+    if (sort === key) {
+      setDirection((d) => (d === "desc" ? "asc" : "desc"));
+    } else {
+      setSort(key);
+      setDirection("desc");
+    }
+  }
+
   return (
     <div className="rounded-xl border border-border overflow-hidden bg-card">
       <Table>
@@ -154,23 +242,35 @@ function LeaderboardTable({ caption }: { caption: string }) {
           <TableRow className="bg-secondary/60">
             <TableHead className="w-16 font-pixel text-xs">#</TableHead>
             <TableHead className="font-pixel text-xs">Player</TableHead>
-            <TableHead className="font-pixel text-xs">Balance</TableHead>
-            <TableHead className="font-pixel text-xs">Playtime</TableHead>
+            <SortableHeader
+              label="Balance"
+              active={sort === "balance"}
+              direction={direction}
+              onClick={() => toggleSort("balance")}
+            />
+            <SortableHeader
+              label="Playtime"
+              active={sort === "playtime"}
+              direction={direction}
+              onClick={() => toggleSort("playtime")}
+            />
           </TableRow>
         </TableHeader>
         <TableBody>
-          {PLACEHOLDER_ROWS.map((r) => (
-            <TableRow key={r.rank}>
-              <TableCell className="font-mono text-primary font-bold">{r.rank}</TableCell>
-              <TableCell className="text-slate-soft">{r.player}</TableCell>
-              <TableCell className="text-slate-soft font-mono">{r.balance}</TableCell>
+          {rows.map((r, i) => (
+            <TableRow key={r.player}>
+              <TableCell className="font-mono text-primary font-bold">{i + 1}</TableCell>
+              <TableCell className="text-slate-deep font-medium">{r.player}</TableCell>
+              <TableCell className="text-slate-soft font-mono">
+                {`$${r.balance.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+              </TableCell>
               <TableCell className="text-slate-soft font-mono">{r.playtime}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       <p className="px-4 py-3 text-xs text-muted-foreground border-t border-border bg-secondary/30">
-        {caption}
+        Season 0 final standings — click a column header to sort.
       </p>
     </div>
   );
@@ -186,7 +286,11 @@ function LiveLeaderboardTable() {
   const { data } = useSuspenseQuery(leaderboardQueryOptions);
   const mounted = useMounted();
   if (!mounted) {
-    return <LeaderboardTable caption="Loading live standings…" />;
+    return (
+      <div className="rounded-xl border border-border overflow-hidden bg-card p-8 text-center text-slate-soft">
+        Loading live standings…
+      </div>
+    );
   }
   const players = data.players;
   const caption =
