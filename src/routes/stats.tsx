@@ -36,7 +36,7 @@ export const Route = createFileRoute("/stats")({
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(leaderboardQueryOptions),
-  component: StatsPage,
+  component: StatsLayout,
   pendingComponent: () => null,
   errorComponent: ({ error, reset }) => {
     const router = useRouter();
@@ -60,6 +60,10 @@ export const Route = createFileRoute("/stats")({
     <div className="p-10 text-center text-slate-soft">Live Stats not found.</div>
   ),
 });
+
+function StatsLayout() {
+  return <Outlet />;
+}
 
 type View = "leaderboards" | "map";
 
