@@ -149,6 +149,7 @@ function parsePlaytimeToMinutes(display: string): number {
 }
 
 function LeaderboardsPanel({ defaultTab = "active" }: { defaultTab?: "active" | "s1" }) {
+  const [tab, setTab] = useState<"active" | "s1">(defaultTab);
   return (
     <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-card/90 backdrop-blur">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -160,7 +161,7 @@ function LeaderboardsPanel({ defaultTab = "active" }: { defaultTab?: "active" | 
         </div>
       </div>
 
-      <Tabs defaultValue={defaultTab} className="mt-6 w-full">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as "active" | "s1")} className="mt-6 w-full">
         <TabsList className="bg-secondary p-1 rounded-xl">
           <TabsTrigger
             value="active"
