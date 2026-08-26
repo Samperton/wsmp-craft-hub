@@ -286,7 +286,11 @@ function LiveLeaderboardTable() {
   const { data } = useSuspenseQuery(leaderboardQueryOptions);
   const mounted = useMounted();
   if (!mounted) {
-    return <LeaderboardTable caption="Loading live standings…" />;
+    return (
+      <div className="rounded-xl border border-border overflow-hidden bg-card p-8 text-center text-slate-soft">
+        Loading live standings…
+      </div>
+    );
   }
   const players = data.players;
   const caption =
