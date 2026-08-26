@@ -291,7 +291,7 @@ function InfoTabs({ value, onValueChange }: { value: string; onValueChange: (v: 
             <h3 className="font-pixel text-base text-slate-deep">Community rules</h3>
             <ul className="mt-5 grid gap-3">
               {[
-                { rule: "Be respectful and understanding of how others would like to be treated." },
+                { rule: "Be respectful and understanding of how others would like to be treated. Keep in-game discussion relevant and respectful. " },
                 { rule: "No hate speech, slurs, or hateful imagery in builds." },
                 { rule: "No chat spam, including large ASCII images." },
                 {
