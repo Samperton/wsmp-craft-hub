@@ -349,7 +349,13 @@ function MapLoading() {
   );
 }
 
-function StatsPageInner({ defaultView = "leaderboards" }: { defaultView?: View }) {
+function StatsPageInner({
+  defaultView = "leaderboards",
+  defaultSeasonTab = "active",
+}: {
+  defaultView?: View;
+  defaultSeasonTab?: "active" | "s1";
+}) {
   const [view, setView] = useState<View>(defaultView);
   const navigate = useNavigate();
   const { start } = useSequencedTransition();
@@ -391,7 +397,7 @@ function StatsPageInner({ defaultView = "leaderboards" }: { defaultView?: View }
             className="animate-fade-in"
           >
             {view === "leaderboards" ? (
-              <LeaderboardsPanel />
+              <LeaderboardsPanel defaultTab={defaultSeasonTab} />
             ) : (
               <Suspense fallback={<MapLoading />}>
                 <WorldMapPanel />
@@ -404,7 +410,13 @@ function StatsPageInner({ defaultView = "leaderboards" }: { defaultView?: View }
   );
 }
 
-export function StatsPage({ defaultView }: { defaultView?: View } = {}) {
-  return <StatsPageInner defaultView={defaultView} />;
+export function StatsPage({
+  defaultView,
+  defaultSeasonTab,
+}: {
+  defaultView?: View;
+  defaultSeasonTab?: "active" | "s1";
+} = {}) {
+  return <StatsPageInner defaultView={defaultView} defaultSeasonTab={defaultSeasonTab} />;
 }
 
