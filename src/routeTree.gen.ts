@@ -16,6 +16,7 @@ import { Route as ModpackRouteImport } from './routes/modpack'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StatsS0RouteImport } from './routes/stats.s0'
 
 const VideoRoute = VideoRouteImport.update({
   id: '/video',
@@ -52,6 +53,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StatsS0Route = StatsS0RouteImport.update({
+  id: '/s0',
+  path: '/s0',
+  getParentRoute: () => StatsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,8 +65,9 @@ export interface FileRoutesByFullPath {
   '/map': typeof MapRoute
   '/modpack': typeof ModpackRoute
   '/rules': typeof RulesRoute
-  '/stats': typeof StatsRoute
+  '/stats': typeof StatsRouteWithChildren
   '/video': typeof VideoRoute
+  '/stats/s0': typeof StatsS0Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -68,8 +75,9 @@ export interface FileRoutesByTo {
   '/map': typeof MapRoute
   '/modpack': typeof ModpackRoute
   '/rules': typeof RulesRoute
-  '/stats': typeof StatsRoute
+  '/stats': typeof StatsRouteWithChildren
   '/video': typeof VideoRoute
+  '/stats/s0': typeof StatsS0Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -78,8 +86,9 @@ export interface FileRoutesById {
   '/map': typeof MapRoute
   '/modpack': typeof ModpackRoute
   '/rules': typeof RulesRoute
-  '/stats': typeof StatsRoute
+  '/stats': typeof StatsRouteWithChildren
   '/video': typeof VideoRoute
+  '/stats/s0': typeof StatsS0Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,8 +100,17 @@ export interface FileRouteTypes {
     | '/rules'
     | '/stats'
     | '/video'
+    | '/stats/s0'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/events' | '/map' | '/modpack' | '/rules' | '/stats' | '/video'
+  to:
+    | '/'
+    | '/events'
+    | '/map'
+    | '/modpack'
+    | '/rules'
+    | '/stats'
+    | '/video'
+    | '/stats/s0'
   id:
     | '__root__'
     | '/'
@@ -102,6 +120,7 @@ export interface FileRouteTypes {
     | '/rules'
     | '/stats'
     | '/video'
+    | '/stats/s0'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -110,7 +129,7 @@ export interface RootRouteChildren {
   MapRoute: typeof MapRoute
   ModpackRoute: typeof ModpackRoute
   RulesRoute: typeof RulesRoute
-  StatsRoute: typeof StatsRoute
+  StatsRoute: typeof StatsRouteWithChildren
   VideoRoute: typeof VideoRoute
 }
 
@@ -165,8 +184,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stats/s0': {
+      id: '/stats/s0'
+      path: '/s0'
+      fullPath: '/stats/s0'
+      preLoaderRoute: typeof StatsS0RouteImport
+      parentRoute: typeof StatsRoute
+    }
   }
 }
+
+interface StatsRouteChildren {
+  StatsS0Route: typeof StatsS0Route
+}
+
+const StatsRouteChildren: StatsRouteChildren = {
+  StatsS0Route: StatsS0Route,
+}
+
+const StatsRouteWithChildren = StatsRoute._addFileChildren(StatsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -174,7 +210,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapRoute: MapRoute,
   ModpackRoute: ModpackRoute,
   RulesRoute: RulesRoute,
-  StatsRoute: StatsRoute,
+  StatsRoute: StatsRouteWithChildren,
   VideoRoute: VideoRoute,
 }
 export const routeTree = rootRouteImport
