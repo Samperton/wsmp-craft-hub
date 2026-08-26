@@ -148,7 +148,7 @@ function parsePlaytimeToMinutes(display: string): number {
   return total;
 }
 
-function LeaderboardsPanel() {
+function LeaderboardsPanel({ defaultTab = "active" }: { defaultTab?: "active" | "s1" }) {
   return (
     <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-card/90 backdrop-blur">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -160,7 +160,7 @@ function LeaderboardsPanel() {
         </div>
       </div>
 
-      <Tabs defaultValue="active" className="mt-6 w-full">
+      <Tabs defaultValue={defaultTab} className="mt-6 w-full">
         <TabsList className="bg-secondary p-1 rounded-xl">
           <TabsTrigger
             value="active"
