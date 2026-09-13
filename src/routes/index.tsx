@@ -2,7 +2,7 @@ import { createFileRoute, useSearch, useNavigate } from "@tanstack/react-router"
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { Copy, Check, Users, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle, LayoutDashboard, Calendar, Package, Globe2 } from "lucide-react";
+import { Copy, Check, Users, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle, LayoutDashboard, Calendar, Package, Globe2, Swords } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -13,8 +13,8 @@ import pluginsData from "@/data/plugins.json";
 import gameplayData from "@/data/gameplay-changes.json";
 import { useSequencedTransition } from "./__root";
 
-// TODO: update when finalized — currently Sept 4, 2025 7pm CST
-const SEASON_START = new Date("2026-09-04T19:00:00-05:00");
+// PvP Tournament: Friday Sept 18, 2026 at 7:00 PM Central (Chicago, UTC-5)
+const PVP_EVENT_START = new Date("2026-09-18T19:00:00-05:00");
 const DISCORD_INVITE = "https://dsc.gg/w-smp";
 
 const TAB_VALUES = ["join", "rules", "plugins", "gameplay", "staff", "bug", "player"] as const;
