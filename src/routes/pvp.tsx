@@ -551,7 +551,7 @@ function PvPComponent() {
                 </div>
                 <h2 className="font-pixel text-lg md:text-xl text-slate-deep">Tournament Rules & Kit</h2>
                 <p className="text-xs text-slate-soft mt-0.5">
-                  Fair, competitive 1.21 survival PvP. All combatants receive identical loadouts.
+                  Fair, competitive, modern survival PvP. All combatants receive identical loadouts.
                 </p>
               </div>
 
