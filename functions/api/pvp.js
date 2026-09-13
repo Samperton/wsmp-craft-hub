@@ -53,28 +53,34 @@ export async function onRequestPost(context) {
       });
     }
 
-    const payload = await context.request.json();
+    // Default to true so it reads live data
+  const [useLiveApi, setUseLiveApi] = useState(true);
 
-    // 2. Save payload into Cloudflare KV
-    if (context.env.TOURNAMENT_KV) {
-      await context.env.TOURNAMENT_KV.put("bracket_data", JSON.stringify(payload));
-    } else {
-      console.warn("TOURNAMENT_KV binding is missing in Cloudflare dashboard.");
-    }
+  // Poll the API every 5 seconds for live bracket updates
+  useEffect(() => {
+    if (!useLiveApi) return;
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
-  } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+    const fetchTournamentData = () => {
+      fetch('/api/pvp')
+        .then((res) => {
+          if (!res.ok) throw new Error('Network error');
+          return res.json();
+        })
+        .then((json: TournamentData) => {
+          // If live data has been sent by the server, update the screen
+          if (json && (json.matches.length > 0 || json.roster.length > 0 || json.status !== 'IDLE')) {
+            setData(json);
+          }
+        })
+        .catch((err) => {
+          console.warn('Live API unreachable, using preview data.', err);
+        });
+    };
+
+    fetchTournamentData();
+    const interval = setInterval(fetchTournamentData, 5000);
+    return () => clearInterval(interval);
+  }, [useLiveApi]);
 }
 
 // Handles browser CORS preflight checks
