@@ -11,7 +11,8 @@ import {
   Crown,
   Coins,
   Shield,
-  Sparkles
+  Sparkles,
+  AlertTriangle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -31,6 +32,8 @@ interface Match {
   player2: string | null;
   winner: string | null;
   loser: string | null;
+  player1Score?: number;
+  player2Score?: number;
   isBronze: boolean;
   nextMatchId?: string;
 }
@@ -48,7 +51,7 @@ interface TournamentData {
   matches: Match[];
 }
 
-// Clean production default — no dummy players
+// Clean production default — starts empty and awaits live data
 const EMPTY_STATE: TournamentData = {
   season: 1,
   active: false,
@@ -62,7 +65,7 @@ const EMPTY_STATE: TournamentData = {
   matches: []
 };
 
-// Kept only for ?dev=true simulation buttons
+// Mock data used exclusively when testing via ?dev=true
 const MOCK_DATA: TournamentData = {
   season: 1,
   active: true,
@@ -83,14 +86,14 @@ const MOCK_DATA: TournamentData = {
     { uuid: '8', name: 'DiamondMiner' }
   ],
   matches: [
-    { id: 'R1M1', round: 1, status: 'COMPLETED', player1: 'Steve', player2: 'Derp', winner: 'Steve', loser: 'Derp', isBronze: false, nextMatchId: 'R2M1' },
-    { id: 'R1M2', round: 1, status: 'COMPLETED', player1: 'Notch', player2: 'DiamondMiner', winner: 'Notch', loser: 'DiamondMiner', isBronze: false, nextMatchId: 'R2M1' },
-    { id: 'R1M3', round: 1, status: 'COMPLETED', player1: 'Alex', player2: 'CreeperBoy', winner: 'Alex', loser: 'CreeperBoy', isBronze: false, nextMatchId: 'R2M2' },
-    { id: 'R1M4', round: 1, status: 'COMPLETED', player1: 'Herobrine', player2: 'ShadowNinja', winner: 'Herobrine', loser: 'ShadowNinja', isBronze: false, nextMatchId: 'R2M2' },
-    { id: 'R2M1', round: 2, status: 'COMPLETED', player1: 'Steve', player2: 'Notch', winner: 'Steve', loser: 'Notch', isBronze: false, nextMatchId: 'FINAL' },
-    { id: 'R2M2', round: 2, status: 'IN_PROGRESS', player1: 'Alex', player2: 'Herobrine', winner: null, loser: null, isBronze: false, nextMatchId: 'FINAL' },
-    { id: 'FINAL', round: 3, status: 'WAITING', player1: 'Steve', player2: null, winner: null, loser: null, isBronze: false },
-    { id: 'BRONZE', round: 3, status: 'WAITING', player1: 'Notch', player2: null, winner: null, loser: null, isBronze: true }
+    { id: 'R1M1', round: 1, status: 'COMPLETED', player1: 'Steve', player2: 'Derp', winner: 'Steve', loser: 'Derp', player1Score: 2, player2Score: 0, isBronze: false, nextMatchId: 'R2M1' },
+    { id: 'R1M2', round: 1, status: 'COMPLETED', player1: 'Notch', player2: 'DiamondMiner', winner: 'Notch', loser: 'DiamondMiner', player1Score: 2, player2Score: 1, isBronze: false, nextMatchId: 'R2M1' },
+    { id: 'R1M3', round: 1, status: 'COMPLETED', player1: 'Alex', player2: 'CreeperBoy', winner: 'Alex', loser: 'CreeperBoy', player1Score: 2, player2Score: 0, isBronze: false, nextMatchId: 'R2M2' },
+    { id: 'R1M4', round: 1, status: 'COMPLETED', player1: 'Herobrine', player2: 'ShadowNinja', winner: 'Herobrine', loser: 'ShadowNinja', player1Score: 2, player2Score: 1, isBronze: false, nextMatchId: 'R2M2' },
+    { id: 'R2M1', round: 2, status: 'COMPLETED', player1: 'Steve', player2: 'Notch', winner: 'Steve', loser: 'Notch', player1Score: 2, player2Score: 1, isBronze: false, nextMatchId: 'FINAL' },
+    { id: 'R2M2', round: 2, status: 'IN_PROGRESS', player1: 'Alex', player2: 'Herobrine', winner: null, loser: null, player1Score: 1, player2Score: 1, isBronze: false, nextMatchId: 'FINAL' },
+    { id: 'FINAL', round: 3, status: 'WAITING', player1: 'Steve', player2: null, winner: null, loser: null, player1Score: 0, player2Score: 0, isBronze: false },
+    { id: 'BRONZE', round: 3, status: 'WAITING', player1: 'Notch', player2: null, winner: null, loser: null, player1Score: 0, player2Score: 0, isBronze: true }
   ]
 };
 
@@ -115,7 +118,7 @@ function PvPComponent() {
   const navigate = useNavigate();
   const { start } = useSequencedTransition();
 
-  // Check for ?dev=true on mount
+  // Show dev tools only when URL contains ?dev=true
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -183,11 +186,11 @@ function PvPComponent() {
             PvP Tournament
           </h1>
           <p className="mt-3 text-slate-soft">
-            Colosseum Championship — live single-elimination bracket.
+            Colosseum Championship — competitive single-elimination series bracket.
           </p>
         </div>
 
-        {/* Dev Control Bar (Hidden unless URL contains ?dev=true) */}
+        {/* Dev Control Bar (Visible only when ?dev=true is appended to the URL) */}
         {isDev && (
           <Card className="mt-8 p-4 border-2 border-primary/50 shadow-soft bg-card/95 backdrop-blur flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2">
@@ -281,60 +284,62 @@ function PvPComponent() {
 
           {/* MAIN TAB CONTENT */}
           <TabsContent value="main" className="mt-6 space-y-8">
-            {/* 1. BRACKET VIEW (Only shown when Live or Completed) */}
+            {/* 1. HORIZONTAL BRACKET VIEW (Displayed once tournament is live or completed) */}
             {!isPreEvent && (
               <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-card/90 backdrop-blur">
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
                   <div>
                     <h2 className="font-pixel text-lg md:text-xl text-slate-deep">Tournament Bracket</h2>
-                    <p className="text-xs text-slate-soft mt-0.5">Live single-elimination matchups</p>
+                    <p className="text-xs text-slate-soft mt-0.5">
+                      Single-elimination series • Best of 3 (Finals: Best of 5)
+                    </p>
                   </div>
                   <span className="text-xs font-mono text-muted-foreground">Scroll horizontally if needed →</span>
                 </div>
 
                 <div className="flex flex-row items-center gap-8 overflow-x-auto pb-6 pt-2">
                   {/* Round 1 Column */}
-                  <div className="flex flex-col gap-5 min-w-[260px]">
+                  <div className="flex flex-col gap-5 min-w-[270px]">
                     <div className="text-center">
                       <span className="text-xs font-mono font-bold text-muted-foreground uppercase tracking-wider">
-                        Round 1
+                        Round 1 (Bo3)
                       </span>
                     </div>
                     {round1.map((match) => (
-                      <MatchCard key={match.id} match={match} />
+                      <MatchCard key={match.id} match={match} targetWins={2} />
                     ))}
                   </div>
 
                   {/* Round 2 (Semifinals) Column */}
-                  <div className="flex flex-col justify-around gap-10 min-w-[260px]">
+                  <div className="flex flex-col justify-around gap-10 min-w-[270px]">
                     <div className="text-center">
                       <span className="text-xs font-mono font-bold text-muted-foreground uppercase tracking-wider">
-                        Semifinals
+                        Semifinals (Bo3)
                       </span>
                     </div>
                     {round2.map((match) => (
-                      <MatchCard key={match.id} match={match} />
+                      <MatchCard key={match.id} match={match} targetWins={2} />
                     ))}
                   </div>
 
                   {/* Finals & Bronze Column */}
-                  <div className="flex flex-col justify-center gap-7 min-w-[280px]">
+                  <div className="flex flex-col justify-center gap-7 min-w-[290px]">
                     <div>
                       <div className="text-center mb-2">
                         <span className="text-xs font-mono font-bold text-primary uppercase tracking-wider">
-                          ★ Grand Finals ★
+                          ★ Grand Finals (Bo5) ★
                         </span>
                       </div>
-                      {finalMatch && <MatchCard match={finalMatch} isFinal />}
+                      {finalMatch && <MatchCard match={finalMatch} targetWins={3} isFinal />}
                     </div>
 
                     <div>
                       <div className="text-center mb-2">
                         <span className="text-xs font-mono font-bold text-amber-600 uppercase tracking-wider">
-                          3rd Place Match
+                          3rd Place Match (Bo3)
                         </span>
                       </div>
-                      {bronzeMatch && <MatchCard match={bronzeMatch} />}
+                      {bronzeMatch && <MatchCard match={bronzeMatch} targetWins={2} />}
                     </div>
                   </div>
                 </div>
@@ -423,25 +428,25 @@ function PvPComponent() {
                         CHAMPION
                       </span>
                     </div>
-                    <ul className="space-y-2 text-xs text-slate-deep">
+                    <ul className="space-y-2.5 text-xs text-slate-deep">
                       <li className="flex items-center gap-2">
-                        <Key className="h-3.5 w-3.5 text-purple-600 shrink-0" />
+                        <Key className="h-4 w-4 text-purple-600 shrink-0" />
                         <span><strong>1x Ultra Crate Key</strong></span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Key className="h-3.5 w-3.5 text-lime-600 shrink-0" />
+                        <Key className="h-4 w-4 text-lime-600 shrink-0" />
                         <span><strong>10x Daily Crate Keys</strong></span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Sparkles className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                        <Sparkles className="h-4 w-4 text-amber-500 shrink-0" />
                         <span>Golden <strong>[CHAMP]</strong> Title</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Shield className="h-3.5 w-3.5 text-slate-700 shrink-0" />
+                        <Shield className="h-4 w-4 text-slate-700 shrink-0" />
                         <span>Wither Skeleton Spawner</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Coins className="h-3.5 w-3.5 text-primary shrink-0" />
+                        <Coins className="h-4 w-4 text-primary shrink-0" />
                         <span><strong>75 Tokens</strong></span>
                       </li>
                     </ul>
@@ -459,21 +464,21 @@ function PvPComponent() {
                         RUNNER-UP
                       </span>
                     </div>
-                    <ul className="space-y-2 text-xs text-slate-deep">
+                    <ul className="space-y-2.5 text-xs text-slate-deep">
                       <li className="flex items-center gap-2">
-                        <Key className="h-3.5 w-3.5 text-purple-600 shrink-0" />
+                        <Key className="h-4 w-4 text-purple-600 shrink-0" />
                         <span><strong>1x Ultra Crate Key</strong></span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Key className="h-3.5 w-3.5 text-lime-600 shrink-0" />
+                        <Key className="h-4 w-4 text-lime-600 shrink-0" />
                         <span><strong>5x Daily Crate Keys</strong></span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Shield className="h-3.5 w-3.5 text-slate-700 shrink-0" />
+                        <Shield className="h-4 w-4 text-slate-700 shrink-0" />
                         <span>Creeper Spawner</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Coins className="h-3.5 w-3.5 text-primary shrink-0" />
+                        <Coins className="h-4 w-4 text-primary shrink-0" />
                         <span><strong>50 Tokens</strong></span>
                       </li>
                     </ul>
@@ -491,17 +496,17 @@ function PvPComponent() {
                         BRONZE
                       </span>
                     </div>
-                    <ul className="space-y-2 text-xs text-slate-deep">
+                    <ul className="space-y-2.5 text-xs text-slate-deep">
                       <li className="flex items-center gap-2">
-                        <Key className="h-3.5 w-3.5 text-lime-600 shrink-0" />
+                        <Key className="h-4 w-4 text-lime-600 shrink-0" />
                         <span><strong>5x Daily Crate Keys</strong></span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Shield className="h-3.5 w-3.5 text-slate-700 shrink-0" />
+                        <Shield className="h-4 w-4 text-slate-700 shrink-0" />
                         <span>Iron Golem Spawner</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Coins className="h-3.5 w-3.5 text-primary shrink-0" />
+                        <Coins className="h-4 w-4 text-primary shrink-0" />
                         <span><strong>40 Tokens</strong></span>
                       </li>
                     </ul>
@@ -519,17 +524,17 @@ function PvPComponent() {
                         ALL FIGHTERS
                       </span>
                     </div>
-                    <ul className="space-y-2 text-xs text-slate-deep">
+                    <ul className="space-y-2.5 text-xs text-slate-deep">
                       <li className="flex items-center gap-2">
-                        <Key className="h-3.5 w-3.5 text-lime-600 shrink-0" />
+                        <Key className="h-4 w-4 text-lime-600 shrink-0" />
                         <span><strong>5x Daily Crate Keys</strong></span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Shield className="h-3.5 w-3.5 text-slate-700 shrink-0" />
+                        <Shield className="h-4 w-4 text-slate-700 shrink-0" />
                         <span>Husk Spawner</span>
                       </li>
                       <li className="flex items-center gap-2">
-                        <Coins className="h-3.5 w-3.5 text-primary shrink-0" />
+                        <Coins className="h-4 w-4 text-primary shrink-0" />
                         <span><strong>10 Tokens</strong></span>
                       </li>
                     </ul>
@@ -538,24 +543,98 @@ function PvPComponent() {
               </div>
             </Card>
 
-            {/* 4. RULES & JOIN INFO BANNER */}
-            <section className="bg-card/90 backdrop-blur border-2 border-border rounded-3xl p-6 sm:p-8 shadow-soft flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="space-y-1.5">
-                <span className="text-xs font-mono font-bold text-primary uppercase tracking-wide">
-                  Tournament Rules & Kits
-                </span>
-                <h3 className="text-lg font-bold text-slate-deep">Standardized Arena Combat</h3>
-                <p className="text-xs text-slate-soft max-w-xl">
-                  All bouts feature standardized Colosseum gear. Inventories are saved and restored automatically upon arena exit.
+            {/* 4. RULES, FORMAT & STANDARDIZED KIT */}
+            <Card className="p-6 md:p-8 border-2 border-border shadow-soft bg-card/90 backdrop-blur">
+              <div className="mb-6 pb-4 border-b border-border">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary mb-1">
+                  <Shield className="h-3.5 w-3.5" /> Colosseum Combat Guidelines
+                </div>
+                <h2 className="font-pixel text-lg md:text-xl text-slate-deep">Tournament Rules & Kit</h2>
+                <p className="text-xs text-slate-soft mt-0.5">
+                  Fair, competitive 1.21 survival PvP. All combatants receive identical loadouts.
                 </p>
               </div>
 
-              <div className="inline-flex items-center gap-2 bg-slate-deep text-white px-5 py-2.5 rounded-2xl shadow-soft text-xs font-mono">
-                <span className="text-muted-foreground">IP</span>
-                <span className="font-bold">w-smp.org</span>
-                <span className="text-primary ml-1">PORT 25565</span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Column 1: Format */}
+                <div className="space-y-3 bg-secondary/30 border border-border rounded-2xl p-5">
+                  <h3 className="font-pixel text-xs text-slate-deep font-bold uppercase tracking-wider flex items-center gap-2">
+                    <Swords className="h-4 w-4 text-primary" /> Series Format
+                  </h3>
+                  <ul className="space-y-2 text-xs text-slate-soft">
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary font-bold">•</span>
+                      <span><strong>Best of 3:</strong> Opening rounds, Semifinals, and Bronze match require 2 round wins to advance.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary font-bold">•</span>
+                      <span><strong>Best of 5 Finals:</strong> The Grand Finals championship requires 3 round wins to crown the winner.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary font-bold">•</span>
+                      <span><strong>Bronze Playoff:</strong> Semifinal runners-up duel for official 3rd place rewards.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Column 2: Check-In & Forfeits */}
+                <div className="space-y-3 bg-secondary/30 border border-border rounded-2xl p-5">
+                  <h3 className="font-pixel text-xs text-slate-deep font-bold uppercase tracking-wider flex items-center gap-2">
+                    <AlertTriangle className="h-4 w-4 text-amber-600" /> Attendance & Forfeits
+                  </h3>
+                  <ul className="space-y-2 text-xs text-slate-soft">
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 font-bold">•</span>
+                      <span><strong>Mandatory Presence:</strong> Fighters must be online on <code>w-smp.org</code> when their bout is called.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 font-bold">•</span>
+                      <span><strong>Strict Forfeit:</strong> No-shows within the match call window forfeit immediately. Opponents advance automatically.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-amber-600 font-bold">•</span>
+                      <span><strong>Inventory Safety:</strong> Survival items are safely backed up and restored upon arena exit.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Column 3: The Standard Kit */}
+                <div className="space-y-3 bg-secondary/30 border border-border rounded-2xl p-5">
+                  <h3 className="font-pixel text-xs text-slate-deep font-bold uppercase tracking-wider flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-emerald-600" /> Standard Arena Kit
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-soft">
+                    <div className="bg-card/80 p-2 rounded-xl border border-border">
+                      <span className="text-slate-deep font-semibold block">🛡️ Armor</span>
+                      Full Iron Set
+                    </div>
+                    <div className="bg-card/80 p-2 rounded-xl border border-border">
+                      <span className="text-slate-deep font-semibold block">⚔️ Melee</span>
+                      Diamond Sword & Iron Axe
+                    </div>
+                    <div className="bg-card/80 p-2 rounded-xl border border-border">
+                      <span className="text-slate-deep font-semibold block">🏹 Ranged</span>
+                      Bow + 16 Arrows
+                    </div>
+                    <div className="bg-card/80 p-2 rounded-xl border border-border">
+                      <span className="text-slate-deep font-semibold block">🍎 Consumables</span>
+                      2x G-Apples, 2x Splash II
+                    </div>
+                  </div>
+                </div>
               </div>
-            </section>
+
+              <div className="mt-6 pt-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+                <span className="text-xs text-slate-soft">
+                  Ready to compete? Join in-game with <code className="bg-secondary text-primary px-1.5 py-0.5 rounded font-mono text-[11px]">/pvp join</code>
+                </span>
+                <div className="inline-flex items-center gap-2 bg-slate-deep text-white px-4 py-2 rounded-xl text-xs font-mono">
+                  <span className="text-muted-foreground">IP</span>
+                  <span className="font-bold">w-smp.org</span>
+                  <span className="text-primary ml-1">PORT 25565</span>
+                </div>
+              </div>
+            </Card>
           </TabsContent>
 
           {/* PODIUM TAB CONTENT */}
@@ -612,7 +691,16 @@ function PvPComponent() {
   );
 }
 
-function MatchCard({ match, isFinal }: { match: Match; isFinal?: boolean }) {
+// Subcomponent: Match Card with Score & Target Wins Display
+function MatchCard({
+  match,
+  targetWins,
+  isFinal
+}: {
+  match: Match;
+  targetWins: number;
+  isFinal?: boolean;
+}) {
   const isLive = match.status === 'IN_PROGRESS';
 
   return (
@@ -626,7 +714,9 @@ function MatchCard({ match, isFinal }: { match: Match; isFinal?: boolean }) {
       }`}
     >
       <div className="flex items-center justify-between text-[11px] text-muted-foreground border-b border-border pb-1.5">
-        <span className="font-mono font-semibold text-slate-deep">{match.id}</span>
+        <span className="font-mono font-semibold text-slate-deep">
+          {match.id} <span className="text-[10px] text-muted-foreground">({isFinal ? 'Bo5' : 'Bo3'})</span>
+        </span>
         <span
           className={`font-mono text-[10px] font-bold uppercase ${
             isLive
@@ -644,12 +734,16 @@ function MatchCard({ match, isFinal }: { match: Match; isFinal?: boolean }) {
 
       <PlayerSlot
         name={match.player1}
+        score={match.player1Score ?? 0}
+        targetWins={targetWins}
         isWinner={match.winner === match.player1 && match.winner !== null}
         isLoser={match.loser === match.player1 && match.loser !== null}
       />
 
       <PlayerSlot
         name={match.player2}
+        score={match.player2Score ?? 0}
+        targetWins={targetWins}
         isWinner={match.winner === match.player2 && match.winner !== null}
         isLoser={match.loser === match.player2 && match.loser !== null}
       />
@@ -657,12 +751,17 @@ function MatchCard({ match, isFinal }: { match: Match; isFinal?: boolean }) {
   );
 }
 
+// Subcomponent: Individual Player Row inside Match Card
 function PlayerSlot({
   name,
+  score,
+  targetWins,
   isWinner,
   isLoser
 }: {
   name: string | null;
+  score: number;
+  targetWins: number;
   isWinner: boolean;
   isLoser: boolean;
 }) {
@@ -695,7 +794,12 @@ function PlayerSlot({
         />
         <span className="truncate">{name}</span>
       </div>
-      {isWinner && <Check className="h-3.5 w-3.5 text-emerald-600 font-bold ml-1" />}
+      <div className="flex items-center gap-1.5 ml-2 shrink-0">
+        <span className="font-mono text-[11px] font-bold px-1.5 py-0.2 rounded bg-card border border-border text-slate-deep">
+          {score}
+        </span>
+        {isWinner && <Check className="h-3.5 w-3.5 text-emerald-600 font-bold" />}
+      </div>
     </div>
   );
 }
