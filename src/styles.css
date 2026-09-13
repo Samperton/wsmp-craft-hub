@@ -63,6 +63,8 @@
   --color-slate-deep: var(--slate-deep);
   --color-slate-soft: var(--slate-soft);
   --color-online: var(--online);
+  --color-reward-crate: var(--reward-crate);
+  --color-reward-token: var(--reward-token);
   --font-pixel: 'JetBrains Mono', monospace;
   --font-minecraft: 'Minecraft', 'JetBrains Mono', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -93,6 +95,8 @@
   --slate-deep: oklch(0.22 0.04 265);
   --slate-soft: oklch(0.35 0.04 265);
   --online: oklch(0.7 0.2 145);
+  --reward-crate: oklch(0.76 0.26 145);
+  --reward-token: oklch(0.7 0.18 75);
 
   --gradient-primary: linear-gradient(135deg, oklch(0.52 0.28 325), oklch(0.6 0.25 305));
   --gradient-sky: linear-gradient(180deg, oklch(0.88 0.04 240) 0%, oklch(0.97 0.01 240) 100%);
