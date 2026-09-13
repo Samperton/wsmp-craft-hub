@@ -816,7 +816,7 @@ export function IndexPage({ defaultTrailerOpen = false }: { defaultTrailerOpen?:
         onOpenMap={handleOpenMap}
       />
       <div className="bg-background">
-        <SeasonCountdown />
+        <PvPCountdownBanner />
         <DiscordCard />
         <ModpackCard onOpenModpack={handleOpenModpack} />
         <InfoTabs value={activeTab} onValueChange={setActiveTab} />
