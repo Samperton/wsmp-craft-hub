@@ -2,7 +2,7 @@ import { createFileRoute, useSearch, useNavigate } from "@tanstack/react-router"
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { Copy, Check, Users, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle, LayoutDashboard, Calendar, Package, Globe2 } from "lucide-react";
+import { Copy, Check, Users, Shield, Bug, UserPlus, BookOpen, ArrowRight, Puzzle, Sparkles, Flag, MessageCircle, PlayCircle, LayoutDashboard, Calendar, Package, Globe2, Swords } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -13,8 +13,8 @@ import pluginsData from "@/data/plugins.json";
 import gameplayData from "@/data/gameplay-changes.json";
 import { useSequencedTransition } from "./__root";
 
-// TODO: update when finalized — currently Sept 4, 2025 7pm CST
-const SEASON_START = new Date("2026-09-04T19:00:00-05:00");
+// PvP Tournament: Friday Sept 18, 2026 at 7:00 PM Central (Chicago, UTC-5)
+const PVP_EVENT_START = new Date("2026-09-18T19:00:00-05:00");
 const DISCORD_INVITE = "https://dsc.gg/w-smp";
 
 const TAB_VALUES = ["join", "rules", "plugins", "gameplay", "staff", "bug", "player"] as const;
@@ -522,15 +522,19 @@ function Footer() {
   );
 }
 
-function SeasonCountdown() {
+function PvPCountdownBanner() {
+  const navigate = useNavigate();
+  const { start } = useSequencedTransition();
   const [now, setNow] = useState<number | null>(null);
+
   useEffect(() => {
     const updateNow = () => setNow(Date.now());
     updateNow();
     const id = setInterval(updateNow, 1000);
     return () => clearInterval(id);
   }, []);
-  const diff = now === null ? SEASON_START.getTime() : SEASON_START.getTime() - now;
+
+  const diff = now === null ? PVP_EVENT_START.getTime() : PVP_EVENT_START.getTime() - now;
   const live = diff <= 0;
   const d = Math.max(0, Math.floor(diff / 86400000));
   const h = Math.max(0, Math.floor((diff % 86400000) / 3600000));
@@ -540,30 +544,59 @@ function SeasonCountdown() {
 
   return (
     <section className="mx-auto max-w-5xl px-6 pt-12">
-      <Card className="relative overflow-hidden p-6 md:p-8 border-2 border-primary/30 shadow-soft bg-gradient-to-br from-slate-deep to-primary/80 text-background text-center">
-        <h2 className="font-minecraft text-2xl md:text-4xl text-shadow-minecraft">
-          {live ? "SEASON 1 IS LIVE" : "Season 1 Starts Soon"}
-        </h2>
-        {!live ? (
-          <div className="mt-5 grid grid-cols-4 gap-3 md:gap-4 max-w-2xl mx-auto">
-            {tiles.map(([label, value], i) => (
-              <div
-                key={label}
-                className={`rounded-lg border-2 border-background/20 bg-background/10 backdrop-blur p-3 md:p-4 shadow-pixel ${i === 3 ? "animate-pulse" : ""}`}
-              >
-                <div className="font-minecraft text-2xl md:text-4xl text-background text-shadow-minecraft tabular-nums">
-                  {now === null ? "--" : value.toString().padStart(2, "0")}
-                </div>
-                <div className="mt-1 text-[10px] md:text-xs uppercase tracking-widest text-background/70">{label}</div>
+      <button
+        type="button"
+        onClick={() => start(() => navigate({ to: "/pvp" }))}
+        className="group w-full text-left"
+      >
+        <Card className="relative overflow-hidden p-6 md:p-8 border-2 border-primary/40 shadow-glow bg-gradient-to-br from-slate-deep via-primary/25 to-primary/90 text-background transition-transform hover:-translate-y-0.5">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 rounded-full border border-background/20 bg-background/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-background">
+                <Swords className="h-3.5 w-3.5" />
+                PvP Event · Registration Open
               </div>
-            ))}
+              <h2 className="mt-3 font-minecraft text-2xl md:text-4xl text-shadow-minecraft">
+                {live ? "THE TOURNAMENT IS LIVE" : "FIGHT FOR GLORY"}
+              </h2>
+              <p className="mt-2 text-sm md:text-base text-background/80">
+                Friday Sept 18 @ 7PM CT · Register in-game with{" "}
+                <code className="font-mono bg-background/15 px-1.5 py-0.5 rounded text-background">/pvp join</code>
+              </p>
+            </div>
+
+            {!live && (
+              <div className="flex gap-2 md:gap-3">
+                {tiles.map(([label, value]) => (
+                  <div
+                    key={label}
+                    className="min-w-[60px] md:min-w-[72px] rounded-lg border-2 border-background/20 bg-background/10 backdrop-blur p-2 md:p-3 text-center"
+                  >
+                    <div className="font-minecraft text-xl md:text-3xl text-background text-shadow-minecraft tabular-nums">
+                      {now === null ? "--" : value.toString().padStart(2, "0")}
+                    </div>
+                    <div className="text-[10px] uppercase tracking-wider text-background/60">{label}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        ) : (
-          <p className="mt-4 font-pixel text-base md:text-lg text-background">
-            Jump in with IP <span className="font-mono text-primary-foreground">w-smp.org</span>
-          </p>
-        )}
-      </Card>
+
+          <div className="relative z-10 mt-5 flex flex-wrap items-center gap-3 md:gap-4">
+            <span className="inline-flex items-center gap-2 rounded-full bg-background/10 border border-background/20 px-3 py-1.5 text-xs font-semibold">
+              <span className="h-2 w-2 rounded-full bg-reward-crate" />
+              <span className="text-reward-crate">3× Daily Crate Keys</span>
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-background/10 border border-background/20 px-3 py-1.5 text-xs font-semibold">
+              <span className="h-2 w-2 rounded-full bg-reward-token" />
+              <span className="text-reward-token">20 Tokens</span>
+            </span>
+            <span className="ml-auto text-xs font-bold uppercase tracking-wider text-background/70 group-hover:text-background transition-colors">
+              Go to PvP page →
+            </span>
+          </div>
+        </Card>
+      </button>
     </section>
   );
 }
