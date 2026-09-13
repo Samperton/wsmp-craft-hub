@@ -70,21 +70,31 @@ export const Route = createFileRoute('/pvp')({
 
 function PvPComponent() {
   const [data, setData] = useState<TournamentData>(MOCK_DATA);
-  const [useLiveApi, setUseLiveApi] = useState(false);
+  const [useLiveApi, setUseLiveApi] = useState(true);
 
+  // Polls your dedicated Cloudflare Worker every 5 seconds
   useEffect(() => {
     if (!useLiveApi) return;
 
-    fetch('/api/pvp')
-      .then((res) => {
-        if (!res.ok) throw new Error('Network error');
-        return res.json();
-      })
-      .then((json: TournamentData) => setData(json))
-      .catch((err) => {
-        console.warn('Live API offline, falling back to mock data.', err);
-        setUseLiveApi(false);
-      });
+    const fetchTournamentData = () => {
+      fetch('https://wsmp-pvp-api.maxvetting.workers.dev')
+        .then((res) => {
+          if (!res.ok) throw new Error('Network error');
+          return res.json();
+        })
+        .then((json: TournamentData) => {
+          if (json && (json.matches.length > 0 || json.roster.length > 0 || json.status !== 'IDLE')) {
+            setData(json);
+          }
+        })
+        .catch((err) => {
+          console.warn('Live API unreachable, falling back to mock data.', err);
+        });
+    };
+
+    fetchTournamentData();
+    const interval = setInterval(fetchTournamentData, 5000);
+    return () => clearInterval(interval);
   }, [useLiveApi]);
 
   const round1 = data.matches.filter((m) => m.round === 1);
@@ -94,7 +104,7 @@ function PvPComponent() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 p-6 md:p-12 font-sans">
-      {/* Dev Control Bar (Toggle Preview States) */}
+      {/* Dev Control Bar */}
       <div className="max-w-6xl mx-auto mb-8 p-4 bg-slate-900 border border-slate-800 rounded-lg flex flex-wrap items-center justify-between gap-4 text-xs">
         <span className="text-slate-400 font-mono">
           STATUS: <strong className="text-purple-400">{data.status}</strong> | SEASON: {data.season}
@@ -102,28 +112,35 @@ function PvPComponent() {
         <div className="flex items-center gap-2">
           <span className="text-slate-400">Preview States:</span>
           <button
-            onClick={() => setData({ ...data, status: 'IDLE' })}
+            onClick={() => { setUseLiveApi(false); setData({ ...data, status: 'IDLE' }); }}
             className={`px-2 py-1 rounded border ${data.status === 'IDLE' ? 'bg-purple-600 border-purple-400 text-white' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
           >
             Registration
           </button>
           <button
-            onClick={() => setData({ ...data, status: 'IN_PROGRESS' })}
+            onClick={() => { setUseLiveApi(false); setData({ ...data, status: 'IN_PROGRESS' }); }}
             className={`px-2 py-1 rounded border ${data.status === 'IN_PROGRESS' ? 'bg-purple-600 border-purple-400 text-white' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
           >
             Live Bracket
           </button>
           <button
-            onClick={() => setData({ ...data, status: 'COMPLETED' })}
+            onClick={() => { setUseLiveApi(false); setData({ ...data, status: 'COMPLETED' }); }}
             className={`px-2 py-1 rounded border ${data.status === 'COMPLETED' ? 'bg-purple-600 border-purple-400 text-white' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
           >
             Podium (Finished)
           </button>
+          {!useLiveApi && (
+            <button
+              onClick={() => setUseLiveApi(true)}
+              className="px-2 py-1 rounded border bg-emerald-600 border-emerald-400 text-white ml-2"
+            >
+              Resume Live Mode
+            </button>
+          )}
         </div>
       </div>
 
       <main className="max-w-7xl mx-auto space-y-12">
-        {/* Header Section */}
         <header className="text-center space-y-3">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
             WSMP PvP Tournament
@@ -133,14 +150,13 @@ function PvPComponent() {
           </p>
         </header>
 
-        {/* 1. PODIUM (Shown when status is COMPLETED) */}
+        {/* 1. PODIUM */}
         {data.status === 'COMPLETED' && (
           <section className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl">
             <h2 className="text-center text-xl font-bold tracking-wider uppercase text-amber-400 mb-8">
               Tournament Champions
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto items-end">
-              {/* 2nd Place */}
               <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-6 text-center order-2 md:order-1">
                 <span className="text-xs uppercase font-semibold text-slate-400">2nd Place</span>
                 <img
@@ -151,7 +167,6 @@ function PvPComponent() {
                 <h3 className="font-bold text-lg text-slate-200">{data.podium.second || 'TBD'}</h3>
               </div>
 
-              {/* 1st Place */}
               <div className="bg-slate-800 border-2 border-amber-400 rounded-xl p-8 text-center order-1 md:order-2 shadow-lg shadow-amber-500/10">
                 <span className="text-xs uppercase font-bold text-amber-400 tracking-wider">Champion (1st)</span>
                 <img
@@ -162,7 +177,6 @@ function PvPComponent() {
                 <h3 className="font-extrabold text-2xl text-amber-300">{data.podium.first || 'TBD'}</h3>
               </div>
 
-              {/* 3rd Place */}
               <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-6 text-center order-3">
                 <span className="text-xs uppercase font-semibold text-amber-600">3rd Place</span>
                 <img
@@ -176,7 +190,7 @@ function PvPComponent() {
           </section>
         )}
 
-        {/* 2. HORIZONTAL BRACKET (Shown when IN_PROGRESS or COMPLETED) */}
+        {/* 2. HORIZONTAL BRACKET */}
         {data.status !== 'IDLE' && (
           <section className="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 overflow-hidden">
             <div className="flex items-center justify-between mb-6">
@@ -187,7 +201,6 @@ function PvPComponent() {
             </div>
 
             <div className="flex flex-row items-center gap-12 overflow-x-auto pb-6 pt-2">
-              {/* Round 1 */}
               <div className="flex flex-col gap-6 min-w-[240px]">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider text-center">
                   Round 1
@@ -197,7 +210,6 @@ function PvPComponent() {
                 ))}
               </div>
 
-              {/* Semifinals */}
               <div className="flex flex-col justify-around gap-12 min-w-[240px]">
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider text-center">
                   Semifinals
@@ -207,7 +219,6 @@ function PvPComponent() {
                 ))}
               </div>
 
-              {/* Finals & Bronze */}
               <div className="flex flex-col justify-center gap-8 min-w-[260px]">
                 <div>
                   <span className="text-xs font-bold text-amber-400 uppercase tracking-wider text-center block mb-2">
