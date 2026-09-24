@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VideoRouteImport } from './routes/video'
 import { Route as StatsRouteImport } from './routes/stats'
 import { Route as RulesRouteImport } from './routes/rules'
+import { Route as ReportRouteImport } from './routes/report'
 import { Route as PvpRouteImport } from './routes/pvp'
 import { Route as ModpackRouteImport } from './routes/modpack'
 import { Route as MapRouteImport } from './routes/map'
@@ -33,6 +34,11 @@ const StatsRoute = StatsRouteImport.update({
 const RulesRoute = RulesRouteImport.update({
   id: '/rules',
   path: '/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportRoute = ReportRouteImport.update({
+  id: '/report',
+  path: '/report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PvpRoute = PvpRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/map': typeof MapRoute
   '/modpack': typeof ModpackRoute
   '/pvp': typeof PvpRoute
+  '/report': typeof ReportRoute
   '/rules': typeof RulesRoute
   '/stats': typeof StatsRouteWithChildren
   '/video': typeof VideoRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/map': typeof MapRoute
   '/modpack': typeof ModpackRoute
   '/pvp': typeof PvpRoute
+  '/report': typeof ReportRoute
   '/rules': typeof RulesRoute
   '/video': typeof VideoRoute
   '/stats/s0': typeof StatsS0Route
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/map': typeof MapRoute
   '/modpack': typeof ModpackRoute
   '/pvp': typeof PvpRoute
+  '/report': typeof ReportRoute
   '/rules': typeof RulesRoute
   '/stats': typeof StatsRouteWithChildren
   '/video': typeof VideoRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/modpack'
     | '/pvp'
+    | '/report'
     | '/rules'
     | '/stats'
     | '/video'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/modpack'
     | '/pvp'
+    | '/report'
     | '/rules'
     | '/video'
     | '/stats/s0'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/modpack'
     | '/pvp'
+    | '/report'
     | '/rules'
     | '/stats'
     | '/video'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   MapRoute: typeof MapRoute
   ModpackRoute: typeof ModpackRoute
   PvpRoute: typeof PvpRoute
+  ReportRoute: typeof ReportRoute
   RulesRoute: typeof RulesRoute
   StatsRoute: typeof StatsRouteWithChildren
   VideoRoute: typeof VideoRoute
@@ -177,6 +190,13 @@ declare module '@tanstack/react-router' {
       path: '/rules'
       fullPath: '/rules'
       preLoaderRoute: typeof RulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report': {
+      id: '/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof ReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pvp': {
@@ -249,6 +269,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapRoute: MapRoute,
   ModpackRoute: ModpackRoute,
   PvpRoute: PvpRoute,
+  ReportRoute: ReportRoute,
   RulesRoute: RulesRoute,
   StatsRoute: StatsRouteWithChildren,
   VideoRoute: VideoRoute,
