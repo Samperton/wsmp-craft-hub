@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import pluginsData from "@/data/plugins.json";
 import gameplayData from "@/data/gameplay-changes.json";
+import { submitReport } from "@/lib/report.functions";
 import { useSequencedTransition } from "./__root";
 
 // PvP Tournament: Friday Sept 18, 2026 at 7:00 PM Central (Chicago, UTC-5)
