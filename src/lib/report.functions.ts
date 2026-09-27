@@ -17,10 +17,26 @@ export const submitReport = createServerFn({ method: "POST" })
       throw new Error("Reports are not configured on the server.");
     }
 
-    const content =
+    const embed =
       data.kind === "bug"
-        ? `**New Bug Report Submitted!**\n\n**Reporter:** ${data.username}\n**Issue Title:** ${data.title}\n**Description Details:**\n${data.body}`
-        : `**New Player Report Submitted!**\n\n**Reporter:** ${data.username}\n**Reported Player:** ${data.reported}\n**Details:**\n${data.body}`;
+        ? {
+            title: "New Bug Report Submitted!",
+            color: 0xaa00aa,
+            fields: [
+              { name: "Reporter", value: data.username, inline: true },
+              { name: "Issue Title", value: data.title ?? "—", inline: true },
+              { name: "Description Details", value: data.body },
+            ],
+          }
+        : {
+            title: "New Player Report Submitted!",
+            color: 0xaa00aa,
+            fields: [
+              { name: "Reporter", value: data.username, inline: true },
+              { name: "Reported Player", value: data.reported ?? "—", inline: true },
+              { name: "Details", value: data.body },
+            ],
+          };
 
     const res = await fetch(webhook, {
       method: "POST",
@@ -28,7 +44,9 @@ export const submitReport = createServerFn({ method: "POST" })
       body: JSON.stringify({
         username:
           data.kind === "bug" ? "Server Bug Tracker" : "Player Report Tracker",
-        content,
+        embeds: [embed],
+        // Never render @everyone/@here/role pings from user input.
+        allowed_mentions: { parse: [] },
       }),
     });
 
