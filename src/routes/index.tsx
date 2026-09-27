@@ -410,17 +410,14 @@ function InfoTabs({ value, onValueChange }: { value: string; onValueChange: (v: 
                 const form = e.target as HTMLFormElement;
                 const data = new FormData(form);
                 try {
-                  const reportContent = `**New Bug Report Submitted!**\n\n**Reporter:** ${data.get("username")}\n**Issue Title:** ${data.get("title")}\n**Description Details:**\n${data.get("body")}`;
-                  
-                  const res = await fetch(import.meta.env.VITE_DISCORD_WEBHOOK_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      username: "Server Bug Tracker", // Controls the name of the bot user in Discord
-                      content: reportContent,         // Discord reads this key perfectly
-                    }),
+                  await submitReport({
+                    data: {
+                      kind: "bug",
+                      username: String(data.get("username") ?? ""),
+                      title: String(data.get("title") ?? ""),
+                      body: String(data.get("body") ?? ""),
+                    },
                   });
-                  if (!res.ok) throw new Error(`HTTP ${res.status}`);
                   toast.success("Bug report sent", { description: "Thanks — staff will review it shortly." });
                   form.reset();
                 } catch (err) {
@@ -466,22 +463,15 @@ function InfoTabs({ value, onValueChange }: { value: string; onValueChange: (v: 
                 e.preventDefault();
                 const form = e.target as HTMLFormElement;
                 const data = new FormData(form);
-                const webhook = import.meta.env.VITE_PLAYER_REPORT_WEBHOOK_URL;
-                if (!webhook) {
-                  toast.error("Reports not configured", { description: "VITE_PLAYER_REPORT_WEBHOOK_URL is missing." });
-                  return;
-                }
                 try {
-                  const reportContent = `**New Player Report Submitted!**\n\n**Reporter:** ${data.get("username")}\n**Reported Player:** ${data.get("reported")}\n**Details:**\n${data.get("body")}`;
-                  const res = await fetch(webhook, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      username: "Player Report Tracker",
-                      content: reportContent,
-                    }),
+                  await submitReport({
+                    data: {
+                      kind: "player",
+                      username: String(data.get("username") ?? ""),
+                      reported: String(data.get("reported") ?? ""),
+                      body: String(data.get("body") ?? ""),
+                    },
                   });
-                  if (!res.ok) throw new Error(`HTTP ${res.status}`);
                   toast.success("Report sent", { description: "Thanks — staff will review it shortly." });
                   form.reset();
                 } catch (err) {
