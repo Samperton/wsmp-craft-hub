@@ -33,6 +33,7 @@ export const submitReport = createServerFn({ method: "POST" })
     });
 
     if (!res.ok) {
+      console.error(`[submitReport] Discord webhook returned ${res.status}`);
       throw new Error(`Discord webhook returned ${res.status}`);
     }
 
